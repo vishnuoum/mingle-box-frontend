@@ -1,73 +1,29 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mingle_box/buyer/services/service.dart';
 
-class BuyerProjects extends StatefulWidget {
-  const BuyerProjects({Key? key}) : super(key: key);
+class CoderResponseHistory extends StatefulWidget {
+  const CoderResponseHistory({Key? key}) : super(key: key);
 
   @override
-  _BuyerProjectsState createState() => _BuyerProjectsState();
+  _CoderResponseHistoryState createState() => _CoderResponseHistoryState();
 }
 
-class _BuyerProjectsState extends State<BuyerProjects> {
+class _CoderResponseHistoryState extends State<CoderResponseHistory> {
+  dynamic responses=[{"id":"123","name":"Project Name","respondedOn":"27/02/2021","buyerId":"123"}];
 
-  bool loading=true;
-  String text="Loading";
-  dynamic projectList=[];
-
-  Service service=Service();
-
-  @override
-  void initState() {
-    load();
-    super.initState();
-  }
-
-  void load()async{
-    projectList= await service.projectList();
-    if(projectList=="error"){
-      setState(() {
-        text="Something went wrong";
-      });
-      Future.delayed(Duration(seconds: 5),(){
-        load();
-      });
-    }
-    else{
-      text="Loading";
-      setState(() {
-        loading=false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text("Projects"),
-          backgroundColor: Colors.blue,
-        ),
-        body: loading?Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
-              SizedBox(height: 10,),
-              Text(text)
-            ],
-          ),
-        ):ListView.builder(
-          itemCount: projectList.length,
-          padding: EdgeInsets.only(left: 10,right: 10,top: 20),
-          itemBuilder: (BuildContext context,int index){
+      appBar: AppBar(
+        elevation: 0,
+        title: Text("Response History"),
+      ),
+      body: ListView.builder(
+          padding: const EdgeInsets.all(10),
+          itemCount: responses.length,
+          itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
-              onTap: (){
-                print("Hello");
-              },
+              onTap: (){},
               child: Container(
                 margin: EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
@@ -85,6 +41,7 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                         bottom: 0,
                         width: MediaQuery.of(context).size.width-20,
                         child: Container(
+                          width: double.infinity,
                           decoration: BoxDecoration(
                             boxShadow: [BoxShadow(
                               color: Colors.grey,
@@ -101,11 +58,9 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                               Expanded(
                                   child: Column(
                                     children: [
-                                      Text("${projectList[index]["name"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                                      Text("${responses[index]["name"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
                                       SizedBox(height: 3,),
-                                      Text("Largest Bid : Rs.${projectList[index]["highestBid"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
-                                      SizedBox(height: 3,),
-                                      Text("By ${projectList[index]['coder']}",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey,fontSize: 16),),
+                                      Text("Responded On: ${responses[index]["respondedOn"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
                                     ],
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
@@ -121,9 +76,9 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                                     hoverColor: Colors.blue[700],
                                     highlightColor: Colors.blue[700],
                                     onTap: () async{
-                                      // await canLaunch("tel:${result[index]["phone"]}") ? await launch("tel:${result[index]["phone"]}") : throw 'Could not launch phone app';
+// await canLaunch("tel:${result[index]["phone"]}") ? await launch("tel:${result[index]["phone"]}") : throw 'Could not launch phone app';
                                     },
-                                    child: SizedBox(width: 56, height: 56, child: Icon(CupertinoIcons.money_dollar,color: Colors.white,)),
+                                    child: SizedBox(width: 56, height: 56, child: Icon(Icons.person,color: Colors.white,)),
                                   ),
                                 ),
                               )
@@ -135,8 +90,8 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                 ),
               ),
             );
-          },
-        )
+          }
+      ),
     );
   }
 }

@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mingle_box/buyer/services/registration.dart';
+import 'package:mingle_box/coder/services/registration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class BuyerLogin extends StatefulWidget {
-  const BuyerLogin({Key? key}) : super(key: key);
+class CoderLogin extends StatefulWidget {
+  const CoderLogin({Key? key}) : super(key: key);
 
   @override
-  _BuyerLoginState createState() => _BuyerLoginState();
+  _CoderLoginState createState() => _CoderLoginState();
 }
 
-class _BuyerLoginState extends State<BuyerLogin> {
+class _CoderLoginState extends State<CoderLogin> {
+
 
   late SharedPreferences sharedPreferences;
-
-  BuyerRegistration registration=BuyerRegistration();
 
   @override
   void initState() {
@@ -26,6 +25,7 @@ class _BuyerLoginState extends State<BuyerLogin> {
   }
 
   TextEditingController eMail=TextEditingController(text: ""),password=TextEditingController(text: "");
+  CoderRegistration registration = CoderRegistration();
 
   showLoading(BuildContext context){
     AlertDialog alert =AlertDialog(
@@ -46,6 +46,7 @@ class _BuyerLoginState extends State<BuyerLogin> {
       return WillPopScope(onWillPop: ()async => false,child: alert);
     });
   }
+
 
   Future<void> alertDialog(var text) async {
     return showDialog<void>(
@@ -74,6 +75,8 @@ class _BuyerLoginState extends State<BuyerLogin> {
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +88,7 @@ class _BuyerLoginState extends State<BuyerLogin> {
           child: ListView(
             padding: EdgeInsets.only(top: 70,left: 30,right: 30),
             children: [
-              Text("Buyer Login",style: TextStyle(fontSize: 30,color: Colors.blue,fontWeight: FontWeight.bold),),
+              Text("Coder Login",style: TextStyle(fontSize: 30,color: Colors.blue,fontWeight: FontWeight.bold),),
               SizedBox(height: 60,),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 7,horizontal: 20),
@@ -140,9 +143,9 @@ class _BuyerLoginState extends State<BuyerLogin> {
                   print(result);
                   if(result!="error"){
                     Navigator.pop(context);
-                    sharedPreferences.setString("type", "buyer");
+                    sharedPreferences.setString("type", "coder");
                     sharedPreferences.setString("mail", result["id"]);
-                    Navigator.pushReplacementNamed(context, "/buyerHome");
+                    Navigator.pushReplacementNamed(context, "/coderHome");
                   }
                   else{
                     Navigator.pop(context);
@@ -156,7 +159,7 @@ class _BuyerLoginState extends State<BuyerLogin> {
                 child: GestureDetector(
                   child: Text("New User? Signup!!!",style: TextStyle(color: Colors.blue),),
                   onTap: (){
-                    Navigator.pushReplacementNamed(context, "/buyerSignup");
+                    Navigator.pushReplacementNamed(context, "/coderSignup");
                   },
                 ),
               )

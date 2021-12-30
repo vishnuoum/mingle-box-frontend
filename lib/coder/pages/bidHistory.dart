@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mingle_box/buyer/services/service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class BuyerBidHistory extends StatefulWidget {
   const BuyerBidHistory({Key? key}) : super(key: key);
@@ -11,12 +9,9 @@ class BuyerBidHistory extends StatefulWidget {
 }
 
 class _BuyerBidHistoryState extends State<BuyerBidHistory> {
-
-  bool loading=true;
-  String text="Loading";
-
-  late SharedPreferences sharedPreferences;
-  Service service=Service();
+  bool searchOn = false;
+  bool search = false;
+  TextEditingController searchController = TextEditingController(text: "");
 
 
   dynamic bidHistory=[{"id":"123","name":"name","projectId":"566","coder":"hello hai","amount":"1200","datetime":"27/02/2021","status":"pending"},
@@ -25,51 +20,13 @@ class _BuyerBidHistoryState extends State<BuyerBidHistory> {
   ];
 
   @override
-  void initState() {
-    loadSP();
-    super.initState();
-  }
-
-  void loadSP()async{
-    sharedPreferences=await SharedPreferences.getInstance();
-    load();
-  }
-
-  void load()async{
-    bidHistory=await service.bidHistory(id: sharedPreferences.getString("mail"));
-    if(bidHistory=="error"){
-      setState(() {
-        text="Something went wrong";
-      });
-      Future.delayed(Duration(seconds: 5),(){
-        load();
-      });
-    }
-    else{
-      text="Loading";
-      setState(() {
-        loading=false;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
           title: Text("Bid History"),
         ),
-        body: loading?Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
-              SizedBox(height: 10,),
-              Text(text)
-            ],
-          ),
-        ):ListView.builder(
+        body: search ? SizedBox() : ListView.builder(
             padding: const EdgeInsets.all(8),
             itemCount: bidHistory.length,
             itemBuilder: (BuildContext context, int index) {

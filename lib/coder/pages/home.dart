@@ -1,25 +1,21 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:mingle_box/buyer/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class BuyerHome extends StatefulWidget {
-  const BuyerHome({Key? key}) : super(key: key);
+class CoderHome extends StatefulWidget {
+  const CoderHome({Key? key}) : super(key: key);
 
   @override
-  _BuyerHomeState createState() => _BuyerHomeState();
+  _CoderHomeState createState() => _CoderHomeState();
 }
 
-class _BuyerHomeState extends State<BuyerHome> {
-
+class _CoderHomeState extends State<CoderHome> {
+  
+  dynamic result={"completedProjects":"10","uniqueBuyers":"8","earned":"10000"};
   late SharedPreferences sharedPreferences;
-  bool loading=true;
-  dynamic result=[];
 
-  Service service=Service();
-  String text="Loading";
 
   List<_SalesData> data = [
     _SalesData('Jan', 35),
@@ -39,31 +35,12 @@ class _BuyerHomeState extends State<BuyerHome> {
 
   @override
   void initState() {
-    loadSP();
+    load();
     super.initState();
   }
 
-  void loadSP()async{
-    sharedPreferences=await SharedPreferences.getInstance();
-    load();
-  }
-
   void load()async{
-    result= await service.loadDashboard(id: sharedPreferences.getString("mail"));
-    if(result=="error"){
-      setState(() {
-        text="Something went wrong";
-      });
-      Future.delayed(Duration(seconds: 5),(){
-        load();
-      });
-    }
-    else{
-      text="Loading";
-      setState(() {
-        loading=false;
-      });
-    }
+    sharedPreferences=await SharedPreferences.getInstance();
   }
 
   @override
@@ -105,49 +82,42 @@ class _BuyerHomeState extends State<BuyerHome> {
               title: Text("Chats"),
               onTap: (){
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerChatList");
+                Navigator.pushNamed(context, "/coderChatList");
               },
             ),
             ListTile(
-              title: Text("Projects"),
+              title: Text("My Projects"),
               onTap: (){
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerProject");
+                Navigator.pushNamed(context, "/coderProjects");
               },
             ),
             ListTile(
-              title: Text("Coders"),
+              title: Text("Requests"),
               onTap: (){
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerSearchCoders");
+                Navigator.pushNamed(context, "/coderRequests");
               },
             ),
             ListTile(
-              title: Text("Bid History"),
+              title: Text("Response History"),
               onTap: (){
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerBidHistory");
-              },
-            ),
-            ListTile(
-              title: Text("Request History"),
-              onTap: (){
-                Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerRequestHistory");
+                Navigator.pushNamed(context, "/coderResponseHistory");
               },
             ),
             ListTile(
               title: Text("Profile"),
               onTap: (){
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerProfile");
+                Navigator.pushNamed(context, "/coderProfile");
               },
             ),
             ListTile(
               title: Text("Payment"),
               onTap: (){
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerPayment");
+                Navigator.pushNamed(context, "/coderPayment");
               },
             ),
             ListTile(
@@ -161,20 +131,11 @@ class _BuyerHomeState extends State<BuyerHome> {
           ],
         ),
       ),
-      body: loading?Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
-            SizedBox(height: 10,),
-            Text(text)
-          ],
-        ),
-      ):ListView(
+      body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 15),
         children: [
           SizedBox(height: 100),
-          Text("Buyer Dashboard",style: TextStyle(color: Colors.blue,fontSize: 28,fontWeight: FontWeight.bold),),
+          Text("Coder Dashboard",style: TextStyle(color: Colors.blue,fontSize: 28,fontWeight: FontWeight.bold),),
           SizedBox(height: 40,),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 25,vertical: 15),
@@ -186,9 +147,9 @@ class _BuyerHomeState extends State<BuyerHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("No. of Bids",style: TextStyle(fontSize: 17,color: Colors.blue[800])),
+                Text("Completed Projects",style: TextStyle(fontSize: 17,color: Colors.blue[800])),
                 SizedBox(height: 10,),
-                Text(result[0]["bids"].toString(),style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
+                Text("${result["completedProjects"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
               ],
             ),
           ),
@@ -203,9 +164,9 @@ class _BuyerHomeState extends State<BuyerHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("No. of Requests",style: TextStyle(fontSize: 17,color: Colors.blue[800]),),
+                Text("Unique Buyers",style: TextStyle(fontSize: 17,color: Colors.blue[800]),),
                 SizedBox(height: 10,),
-                Text(result[0]['requests'].toString(),style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
+                Text("${result["uniqueBuyers"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
               ],
             ),
           ),
@@ -220,9 +181,9 @@ class _BuyerHomeState extends State<BuyerHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Amount Spent",style: TextStyle(fontSize: 17,color: Colors.blue[800]),),
+                Text("Amount Earned",style: TextStyle(fontSize: 17,color: Colors.blue[800]),),
                 SizedBox(height: 10,),
-                Text("Rs.${result[0]["spent"].toString()}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
+                Text("Rs.${result["earned"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
               ],
             ),
           ),

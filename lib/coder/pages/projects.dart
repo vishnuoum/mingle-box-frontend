@@ -2,72 +2,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mingle_box/buyer/services/service.dart';
 
-class BuyerProjects extends StatefulWidget {
-  const BuyerProjects({Key? key}) : super(key: key);
+class CoderProjects extends StatefulWidget {
+  const CoderProjects({Key? key}) : super(key: key);
 
   @override
-  _BuyerProjectsState createState() => _BuyerProjectsState();
+  _CoderProjectsState createState() => _CoderProjectsState();
 }
 
-class _BuyerProjectsState extends State<BuyerProjects> {
+class _CoderProjectsState extends State<CoderProjects> {
 
-  bool loading=true;
-  String text="Loading";
-  dynamic projectList=[];
-
-  Service service=Service();
-
-  @override
-  void initState() {
-    load();
-    super.initState();
-  }
-
-  void load()async{
-    projectList= await service.projectList();
-    if(projectList=="error"){
-      setState(() {
-        text="Something went wrong";
-      });
-      Future.delayed(Duration(seconds: 5),(){
-        load();
-      });
-    }
-    else{
-      text="Loading";
-      setState(() {
-        loading=false;
-      });
-    }
-  }
+  bool searchOn=false;
+  bool search=false;
+  TextEditingController searchController=TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Text("Projects"),
+          title: Text("My Projects"),
           backgroundColor: Colors.blue,
+          // elevation: 0,
         ),
-        body: loading?Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
-              SizedBox(height: 10,),
-              Text(text)
-            ],
-          ),
-        ):ListView.builder(
-          itemCount: projectList.length,
+        body: ListView(
           padding: EdgeInsets.only(left: 10,right: 10,top: 20),
-          itemBuilder: (BuildContext context,int index){
-            return GestureDetector(
-              onTap: (){
-                print("Hello");
-              },
+          children: [
+            GestureDetector(
+              onTap: (){},
               child: Container(
                 margin: EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
@@ -101,11 +63,9 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                               Expanded(
                                   child: Column(
                                     children: [
-                                      Text("${projectList[index]["name"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                                      Text("Project Name",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
                                       SizedBox(height: 3,),
-                                      Text("Largest Bid : Rs.${projectList[index]["highestBid"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
-                                      SizedBox(height: 3,),
-                                      Text("By ${projectList[index]['coder']}",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey,fontSize: 16),),
+                                      Text("Largest Bid : Rs.1000",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
                                     ],
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
@@ -123,7 +83,7 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                                     onTap: () async{
                                       // await canLaunch("tel:${result[index]["phone"]}") ? await launch("tel:${result[index]["phone"]}") : throw 'Could not launch phone app';
                                     },
-                                    child: SizedBox(width: 56, height: 56, child: Icon(CupertinoIcons.money_dollar,color: Colors.white,)),
+                                    child: SizedBox(width: 56, height: 56, child: Icon(Icons.arrow_forward,color: Colors.white,)),
                                   ),
                                 ),
                               )
@@ -134,9 +94,13 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                   ],
                 ),
               ),
-            );
-          },
-        )
+            ),
+          ],
+        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){},
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

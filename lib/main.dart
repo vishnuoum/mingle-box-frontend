@@ -7,9 +7,20 @@ import 'package:mingle_box/buyer/pages/projects.dart';
 import 'package:mingle_box/buyer/pages/login.dart';
 import 'package:mingle_box/buyer/pages/signup.dart';
 
+import 'buyer/pages/chatList.dart';
+import 'buyer/pages/payment.dart';
 import 'buyer/pages/profile.dart';
 import 'buyer/pages/requestHistory.dart';
 import 'buyer/pages/searchCoders.dart';
+import 'coder/pages/chatList.dart';
+import 'coder/pages/home.dart';
+import 'coder/pages/login.dart';
+import 'coder/pages/payment.dart';
+import 'coder/pages/profile.dart';
+import 'coder/pages/projects.dart';
+import 'coder/pages/requests.dart';
+import 'coder/pages/responseHistory.dart';
+import 'coder/pages/signup.dart';
 
 void main() {
 
@@ -48,7 +59,18 @@ class MyApp extends StatelessWidget {
         "/buyerSearchCoders":(context) => BuyerSearchCoders(),
         "/buyerRequestHistory":(context) => BuyerRequestHistory(),
         "/buyerProfile":(context) => BuyerProfile(),
-        "/choose":(context) => Choose()
+        "/buyerPayment":(context) => BuyerPayment(),
+        "/buyerChatList":(context) => BuyerChatList(),
+        "/choose":(context) => Choose(),
+        "/coderHome":(context) => CoderHome(),
+        "/coderLogin": (context) => CoderLogin(),
+        "/coderSignup":(context) => CoderSignup(),
+        "/coderProjects":(context) => CoderProjects(),
+        "/coderProfile":(context) => CoderProfile(),
+        "/coderPayment":(context) => CoderPayment(),
+        "/coderRequests":(context) => CoderRequests(),
+        "/coderChatList":(context) => CoderChatList(),
+        "/coderResponseHistory":(context) => CoderResponseHistory(),
       },
       initialRoute: "/choose",
     );

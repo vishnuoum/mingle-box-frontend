@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:mingle_box/buyer/services/registration.dart';
+import 'package:mingle_box/coder/services/registration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class BuyerSignup extends StatefulWidget {
-  const BuyerSignup({Key? key}) : super(key: key);
+class CoderSignup extends StatefulWidget {
+  const CoderSignup({Key? key}) : super(key: key);
 
   @override
-  _BuyerSignupState createState() => _BuyerSignupState();
+  _CoderSignupState createState() => _CoderSignupState();
 }
 
-class _BuyerSignupState extends State<BuyerSignup> {
+class _CoderSignupState extends State<CoderSignup> {
+
+  CoderRegistration registration=CoderRegistration();
 
   late SharedPreferences sharedPreferences;
+  TextEditingController eMail=TextEditingController(text: ""),password=TextEditingController(text: ""),
+  name=TextEditingController(text: ""),repeatPassword=TextEditingController(text: "");
 
-  BuyerRegistration registration=BuyerRegistration();
+  String? dropValue="Select an option";
 
   @override
   void initState() {
@@ -24,11 +28,6 @@ class _BuyerSignupState extends State<BuyerSignup> {
   void load()async{
     sharedPreferences=await SharedPreferences.getInstance();
   }
-
-  TextEditingController eMail=TextEditingController(text: ""),password=TextEditingController(text: ""),
-  name=TextEditingController(text: ""),repeatPassword=TextEditingController(text: ""),company=TextEditingController(text: "");
-
-  String? dropValue="Select an option";
 
   showLoading(BuildContext context){
     AlertDialog alert =AlertDialog(
@@ -49,6 +48,7 @@ class _BuyerSignupState extends State<BuyerSignup> {
       return WillPopScope(onWillPop: ()async => false,child: alert);
     });
   }
+
 
   Future<void> alertDialog(var text) async {
     return showDialog<void>(
@@ -88,7 +88,7 @@ class _BuyerSignupState extends State<BuyerSignup> {
           child: ListView(
             padding: EdgeInsets.only(top: 70,left: 30,right: 30),
             children: [
-              Text("Buyer Signup",style: TextStyle(fontSize: 30,color: Colors.blue,fontWeight: FontWeight.bold),),
+              Text("Coder Signup",style: TextStyle(fontSize: 30,color: Colors.blue,fontWeight: FontWeight.bold),),
               SizedBox(height: 60,),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 7,horizontal: 20),
@@ -117,22 +117,6 @@ class _BuyerSignupState extends State<BuyerSignup> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: "E-mail",
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              SizedBox(height: 12,),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 7,horizontal: 20),
-                decoration: BoxDecoration(
-                    color: Colors.blue[100],
-                    borderRadius: BorderRadius.circular(10)
-                ),
-                child: TextFormField(
-                  controller: company,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: "Company",
                     border: InputBorder.none,
                   ),
                 ),
@@ -209,7 +193,7 @@ class _BuyerSignupState extends State<BuyerSignup> {
                 child: Text("Signup",style: TextStyle(color: Colors.white,fontSize: 16),),
                 onPressed: ()async{
                   FocusScope.of(context).unfocus();
-                  if(eMail.text.length==0 || password.text.length==0 || company.text.length==0 ||repeatPassword.text.length==0||name.text.length==0){
+                  if(eMail.text.length==0 || password.text.length==0 ||repeatPassword.text.length==0||name.text.length==0){
                     alertDialog("Please complete the form");
                     return;
                   }
@@ -217,13 +201,13 @@ class _BuyerSignupState extends State<BuyerSignup> {
                     alertDialog("Passwords doesn't match");
                   }
                   showLoading(context);
-                  dynamic result=await registration.signup(mail: eMail.text, username:name.text, company:company.text, password: password.text);
+                  dynamic result=await registration.signup(mail: eMail.text, username:name.text, password: password.text);
                   print(result);
                   if(result!="error"){
                     Navigator.pop(context);
-                    sharedPreferences.setString("type", "buyer");
+                    sharedPreferences.setString("type", "coder");
                     sharedPreferences.setString("mail", result["id"]);
-                    Navigator.pushReplacementNamed(context, "/buyerHome");
+                    Navigator.pushReplacementNamed(context, "/coderHome");
                   }
                   else{
                     Navigator.pop(context);
@@ -237,7 +221,7 @@ class _BuyerSignupState extends State<BuyerSignup> {
                 child: GestureDetector(
                   child: Text("Already a User? Login!!!",style: TextStyle(color: Colors.blue),),
                   onTap: (){
-                    Navigator.pushReplacementNamed(context, "/buyerLogin");
+                    Navigator.pushReplacementNamed(context, "/coderLogin");
                   },
                 ),
               )

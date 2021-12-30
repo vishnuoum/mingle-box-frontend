@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mingle_box/buyer/services/service.dart';
 
 class BuyerSearchCoders extends StatefulWidget {
   const BuyerSearchCoders({Key? key}) : super(key: key);
@@ -11,9 +10,6 @@ class BuyerSearchCoders extends StatefulWidget {
 
 class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
 
-  bool loading=true;
-  String text="Loading";
-  Service service=Service();
   bool searchOn=false;
   bool search=false;
   TextEditingController searchController=TextEditingController(text: "");
@@ -24,38 +20,6 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
     {"id":"123","name":"name"},
     {"id":"123","name":"name"},
   ];
-
-  @override
-  void initState() {
-    load();
-    super.initState();
-  }
-
-  void load({String query=""})async{
-
-    if(!loading){
-      setState(() {
-        loading=true;
-      });
-    }
-
-    coders=await service.codersList(query: query);
-    if(coders=="error"){
-      setState(() {
-        text="Something went wrong";
-      });
-      Future.delayed(Duration(seconds: 5),(){
-        load(query: query);
-      });
-    }
-    else{
-      print(coders);
-      text="Loading";
-      setState(() {
-        loading=false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,30 +57,20 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
               ],
             ),
           )
-              :Text("Coders"),
+              :Text("Search Coders"),
           backgroundColor: Colors.blue,
           // elevation: 0,
           actions: searchOn?[]:[
-            IconButton(onPressed: loading?null:(){
+            IconButton(onPressed: (){
               setState(() {
                 searchOn=true;
                 search=true;
               });
-            }, icon: Icon(Icons.search),
-            ),
+            }, icon: Icon(Icons.search)),
             SizedBox(width: 5,)
           ],
         ),
-        body: loading?Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
-              SizedBox(height: 10,),
-              Text(text)
-            ],
-          ),
-        ):search?SizedBox():ListView.separated(
+        body: search?SizedBox():ListView.separated(
             separatorBuilder: (context, index) => Divider(
               color: Colors.black,
               thickness: 0.05,
@@ -130,11 +84,11 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
                 contentPadding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
                 leading: CircleAvatar(
                   radius: 25,
-                  child: Text(coders[index]["username"][0],style: TextStyle(fontSize: 17),),
+                  child: Text(coders[index]["name"][0].toUpperCase(),style: TextStyle(fontSize: 17),),
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                 ),
-                title: Text("${coders[index]["username"]}"),
+                title: Text("${coders[index]["name"]}"),
                 trailing: IconButton(
                   onPressed: (){},
                   color: Colors.blue,
