@@ -100,4 +100,32 @@ class Service{
     }
   }
 
+  Future<dynamic> buyerRequestHistory({required String? id})async{
+    try {
+      dynamic response = await post(
+          Uri.parse("http://192.168.18.2:3000/buyerRequestHistory"),body: {"id":id});
+      print(response.body);
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      print(e);
+      print("edit profile exception");
+      return "error";
+    }
+  }
+
+  Future<dynamic> buyerPaymentHistory({required String? id})async{
+    try {
+      dynamic response = await post(
+          Uri.parse("http://192.168.18.2:3000/buyerPaymentHistory"),body: {"id":id});
+      print(response.body);
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      print(e);
+      print("edit profile exception");
+      return "error";
+    }
+  }
+
 }

@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:mingle_box/coder/services/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CoderProfile extends StatefulWidget {
   const CoderProfile({Key? key}) : super(key: key);
@@ -9,37 +13,53 @@ class CoderProfile extends StatefulWidget {
 
 class _CoderProfileState extends State<CoderProfile> {
 
-  dynamic result={
-    "id":"id",
-    "username":"name",
-    "mail":"hello@gmail.com",
-    "technology":["python","java","c"],
-  };
+  Profile profile=Profile();
+  late SharedPreferences sharedPreferences;
+  bool loading=true;
+  String loadText="Loading";
+
+
+  dynamic result={};
 
   List<Widget> technologies=[];
 
   TextEditingController username=TextEditingController(text: ""),company=TextEditingController(text: ""),mail=TextEditingController(text: "");
 
-
-  showAlertDialog(BuildContext context) {
-
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed:  () {},
+  showLoading(BuildContext context){
+    AlertDialog alert =AlertDialog(
+      content: SizedBox(
+        height: 80,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+            SizedBox(height: 10,),
+            Text("Loading")
+          ],
+        ),
+      ),
     );
-    Widget continueButton = TextButton(
-      child: Text("Continue"),
-      onPressed:  () {},
+
+    showDialog(context: context,builder:(BuildContext context){
+      return WillPopScope(onWillPop: ()async => false,child: alert);
+    });
+  }
+
+  showAlertDialog(BuildContext context,String text) {
+
+    Widget okButton = TextButton(
+      child: Text("Ok"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("AlertDialog"),
-      content: Text("Would you like to continue learning how to use Flutter alerts?"),
+      title: Text("Alert"),
+      content: Text(text),
       actions: [
-        cancelButton,
-        continueButton,
+        okButton,
       ],
     );
 
@@ -50,6 +70,36 @@ class _CoderProfileState extends State<CoderProfile> {
         return alert;
       },
     );
+  }
+
+  @override
+  void initState() {
+    load();
+    super.initState();
+  }
+
+  void load()async{
+    sharedPreferences=await SharedPreferences.getInstance();
+    loadProfile();
+  }
+
+  void loadProfile()async{
+    result=await profile.fetchProfile(id: sharedPreferences.getString("mail"));
+    print(result);
+    if(result!="error"){
+      result["technology"]=jsonDecode(result["technology"]);
+      setState(() {
+        loading=false;
+      });
+    }
+    else{
+      Future.delayed(Duration(seconds: 5),(){
+        setState(() {
+          loadText="Something went wrong";
+        });
+        loadProfile();
+      });
+    }
   }
 
 
@@ -64,7 +114,17 @@ class _CoderProfileState extends State<CoderProfile> {
         ),
         backgroundColor: Colors.transparent,
       ),
-      body: ListView(
+      body: loading?Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+            SizedBox(height: 10,),
+            Text(loadText)
+          ],
+        ),
+      ):
+      ListView(
         padding: EdgeInsets.only(top: 20,left: 15,right: 15),
         children: [
           Text("Profile",style: TextStyle(color: Colors.blue,fontSize: 28,fontWeight: FontWeight.bold),),
@@ -90,8 +150,9 @@ class _CoderProfileState extends State<CoderProfile> {
           ),
           SizedBox(height: 10,),
           ListView.separated(
+            primary: false,
             shrinkWrap: true,
-            itemCount: result["technology"].length,
+            itemCount: result["technology"]==null?0:result["technology"].length,
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(result["technology"][index]),
@@ -104,7 +165,7 @@ class _CoderProfileState extends State<CoderProfile> {
 
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: loading?null:FloatingActionButton(
         onPressed: (){
 
           username.text=result["username"];
@@ -161,14 +222,30 @@ class _CoderProfileState extends State<CoderProfile> {
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Phone No.'
+                            hintText: 'Mail ID'
                         ),
                       ),
                     ),
                     SizedBox(height: 15,),
                     TextButton(onPressed: () async {
-                      if (username.text.length != 0 &&
-                          company.text.length != 0 && mail.text.length!=0) {}
+                      FocusScope.of(context).unfocus();
+                      if(username.text==result["username"]){
+                        showAlertDialog(context, "Please change your name if you wish.");
+                      }
+                      else if (username.text.length != 0 && mail.text.length!=0) {
+                        showLoading(context);
+                        var res=await profile.editProfile(id: sharedPreferences.getString("mail"), username: username.text);
+                        if(res=="done"){
+                          loading=true;
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          loadProfile();
+                        }
+                        else{
+                          Navigator.pop(context);
+                          showAlertDialog(context, "Something went wrong. Try again");
+                        }
+                      }
                     },
                       child: Text("Update", style: TextStyle(fontSize: 17),),
                       style: TextButton.styleFrom(shape: RoundedRectangleBorder(
@@ -177,7 +254,7 @@ class _CoderProfileState extends State<CoderProfile> {
                           primary: Colors.white,
                           padding: EdgeInsets.all(18)),),
                     SizedBox(height: 15,),
-                    TextButton(onPressed: () {
+                    TextButton(onPressed: () async{
                       Navigator.pop(context);
                     },
                       child: Text("Cancel", style: TextStyle(fontSize: 17)),

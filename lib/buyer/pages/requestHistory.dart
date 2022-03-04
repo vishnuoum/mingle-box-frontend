@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mingle_box/buyer/services/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BuyerRequestHistory extends StatefulWidget {
   const BuyerRequestHistory({Key? key}) : super(key: key);
@@ -13,7 +17,41 @@ class BuyerRequestHistory extends StatefulWidget {
 class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
 
   dynamic requests=[{"id":"123","name":"Project Name","responses":"100","technology":["python","c"]},{"id":"123","name":"Project Name","responses":"100","technology":["python","c"]},{"id":"123","name":"Project Name","responses":"100","technology":["python","c"]}];
+  bool loading=true;
+  Service service=Service();
+  String text="Loading";
 
+  late SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    loadSP();
+    super.initState();
+  }
+
+  void loadSP()async{
+    sharedPreferences=await SharedPreferences.getInstance();
+    load();
+  }
+
+  void load()async{
+    requests=await service.buyerRequestHistory(id: sharedPreferences.getString("mail"));
+    if(requests=="error"){
+      setState(() {
+        text="Something went wrong";
+      });
+      Future.delayed(Duration(seconds: 5),(){
+        load();
+      });
+    }
+    else{
+      text="Loading";
+      setState(() {
+        loading=false;
+      });
+    }
+    print(requests);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +60,20 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
           elevation: 0,
           title: Text("Request history"),
         ),
-        body: ListView.builder(
+        body: loading?Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+              SizedBox(height: 10,),
+              Text(text)
+            ],
+          ),
+        ):requests.length==0?Center(child: Text("Nothing to Show"),):ListView.builder(
             padding: const EdgeInsets.all(10),
             itemCount: requests.length,
             itemBuilder: (BuildContext context, int index) {
+              requests[index]["technology"]=json.decode(requests[index]["technology"]);
               return ExpansionTile(
                   title: Text(requests[index]["name"],style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
                   subtitle: Text("Responses: ${requests[index]["responses"]}",style: TextStyle(fontSize: 15)),

@@ -42,11 +42,11 @@ class _BuyerChatListState extends State<BuyerChatList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("${chatList[index]["msg"]}",overflow: TextOverflow.ellipsis,),
-              CircleAvatar(
-                radius: 10,
-                backgroundColor: Colors.blue,
-                child: Text(chatList[index]["not read"],style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold),),
-              )
+              // CircleAvatar(
+              //   radius: 10,
+              //   backgroundColor: Colors.blue,
+              //   child: Text(chatList[index]["not read"],style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold),),
+              // )
             ],
           ),
         );

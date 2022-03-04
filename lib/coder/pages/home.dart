@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:mingle_box/coder/services/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -15,7 +16,9 @@ class _CoderHomeState extends State<CoderHome> {
   
   dynamic result={"completedProjects":"10","uniqueBuyers":"8","earned":"10000"};
   late SharedPreferences sharedPreferences;
-
+  Dashboard dashboard=Dashboard();
+  bool loading=true;
+  String loadText="Loading";
 
   List<_SalesData> data = [
     _SalesData('Jan', 35),
@@ -41,6 +44,26 @@ class _CoderHomeState extends State<CoderHome> {
 
   void load()async{
     sharedPreferences=await SharedPreferences.getInstance();
+    loadDash();
+  }
+
+  void loadDash()async{
+    result=await dashboard.fetch(id: sharedPreferences.getString("mail"));
+    print(result.runtimeType);
+    if(result!="error") {
+      setState(() {
+        loading = false;
+        loadText="Loading";
+      });
+    }
+    else{
+      Future.delayed(Duration(seconds: 5),(){
+        setState(() {
+          loadText="Something went wrong.";
+        });
+        loadDash();
+      });
+    }
   }
 
   @override
@@ -54,7 +77,7 @@ class _CoderHomeState extends State<CoderHome> {
           color: Colors.blue
         ),
       ),
-      drawer: Drawer(
+      drawer: loading?null:Drawer(
         child: ListView(
           children: [
             DrawerHeader(
@@ -69,9 +92,9 @@ class _CoderHomeState extends State<CoderHome> {
                     radius: 35,
                   ),
                   SizedBox(height: 15,),
-                  Text("Username",style: TextStyle(color: Colors.white,fontSize: 18),),
+                  Text(result[0]["username"],style: TextStyle(color: Colors.white,fontSize: 18),),
                   SizedBox(height: 5,),
-                  Text("Mail",style: TextStyle(color: Colors.white),)
+                  Text(result[0]["mail"],style: TextStyle(color: Colors.white),)
                 ],
               ),
               decoration: BoxDecoration(
@@ -100,13 +123,6 @@ class _CoderHomeState extends State<CoderHome> {
               },
             ),
             ListTile(
-              title: Text("Response History"),
-              onTap: (){
-                Navigator.pop(context);
-                Navigator.pushNamed(context, "/coderResponseHistory");
-              },
-            ),
-            ListTile(
               title: Text("Profile"),
               onTap: (){
                 Navigator.pop(context);
@@ -114,7 +130,7 @@ class _CoderHomeState extends State<CoderHome> {
               },
             ),
             ListTile(
-              title: Text("Payment"),
+              title: Text("Payments"),
               onTap: (){
                 Navigator.pop(context);
                 Navigator.pushNamed(context, "/coderPayment");
@@ -131,7 +147,16 @@ class _CoderHomeState extends State<CoderHome> {
           ],
         ),
       ),
-      body: ListView(
+      body: loading?Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+            SizedBox(height: 10,),
+            Text(loadText)
+          ],
+        ),
+      ):ListView(
         padding: EdgeInsets.symmetric(horizontal: 15),
         children: [
           SizedBox(height: 100),
@@ -149,7 +174,7 @@ class _CoderHomeState extends State<CoderHome> {
               children: [
                 Text("Completed Projects",style: TextStyle(fontSize: 17,color: Colors.blue[800])),
                 SizedBox(height: 10,),
-                Text("${result["completedProjects"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
+                Text("${result[0]["completedProjects"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
               ],
             ),
           ),
@@ -166,7 +191,7 @@ class _CoderHomeState extends State<CoderHome> {
               children: [
                 Text("Unique Buyers",style: TextStyle(fontSize: 17,color: Colors.blue[800]),),
                 SizedBox(height: 10,),
-                Text("${result["uniqueBuyers"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
+                Text("${result[0]["uniqueBuyers"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
               ],
             ),
           ),
@@ -183,30 +208,30 @@ class _CoderHomeState extends State<CoderHome> {
               children: [
                 Text("Amount Earned",style: TextStyle(fontSize: 17,color: Colors.blue[800]),),
                 SizedBox(height: 10,),
-                Text("Rs.${result["earned"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
+                Text("Rs. ${result[0]["earned"]}",style: TextStyle(fontSize: 25,color: Colors.blue[700],fontWeight: FontWeight.bold),),
               ],
             ),
           ),
           SizedBox(height: 20,),
-          SfCartesianChart(
-              primaryXAxis: CategoryAxis(),
-              zoomPanBehavior: ZoomPanBehavior(enablePanning: true,enablePinching: true),
-              // Chart title
-              title: ChartTitle(text: 'Half yearly sales analysis',textStyle: TextStyle(color: Colors.black,fontSize: 15)),
-              // Enable legend
-              legend: Legend(isVisible: false),
-              // Enable tooltip
-              tooltipBehavior: TooltipBehavior(enable: true),
-              series: <ChartSeries<_SalesData, String>>[
-                LineSeries<_SalesData, String>(
-                  color: Colors.blue,
-                    dataSource: data,
-                    xValueMapper: (_SalesData sales, _) => sales.year,
-                    yValueMapper: (_SalesData sales, _) => sales.sales,
-                    name: 'Sales',
-                    // Enable data label
-                    dataLabelSettings: DataLabelSettings(isVisible: false))
-              ]),
+          // SfCartesianChart(
+          //     primaryXAxis: CategoryAxis(),
+          //     zoomPanBehavior: ZoomPanBehavior(enablePanning: true,enablePinching: true),
+          //     // Chart title
+          //     title: ChartTitle(text: 'Half yearly sales analysis',textStyle: TextStyle(color: Colors.black,fontSize: 15)),
+          //     // Enable legend
+          //     legend: Legend(isVisible: false),
+          //     // Enable tooltip
+          //     tooltipBehavior: TooltipBehavior(enable: true),
+          //     series: <ChartSeries<_SalesData, String>>[
+          //       LineSeries<_SalesData, String>(
+          //         color: Colors.blue,
+          //           dataSource: data,
+          //           xValueMapper: (_SalesData sales, _) => sales.year,
+          //           yValueMapper: (_SalesData sales, _) => sales.sales,
+          //           name: 'Sales',
+          //           // Enable data label
+          //           dataLabelSettings: DataLabelSettings(isVisible: false))
+          //     ]),
         ],
       ),
     );

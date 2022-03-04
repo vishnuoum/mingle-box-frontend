@@ -6,8 +6,10 @@ import 'package:mingle_box/buyer/pages/home.dart';
 import 'package:mingle_box/buyer/pages/projects.dart';
 import 'package:mingle_box/buyer/pages/login.dart';
 import 'package:mingle_box/buyer/pages/signup.dart';
+import 'package:mingle_box/coder/pages/projectBidders.dart';
 
 import 'buyer/pages/chatList.dart';
+import 'buyer/pages/makePayement.dart';
 import 'buyer/pages/payment.dart';
 import 'buyer/pages/profile.dart';
 import 'buyer/pages/requestHistory.dart';
@@ -19,7 +21,6 @@ import 'coder/pages/payment.dart';
 import 'coder/pages/profile.dart';
 import 'coder/pages/projects.dart';
 import 'coder/pages/requests.dart';
-import 'coder/pages/responseHistory.dart';
 import 'coder/pages/signup.dart';
 
 void main() {
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         "/buyerProfile":(context) => BuyerProfile(),
         "/buyerPayment":(context) => BuyerPayment(),
         "/buyerChatList":(context) => BuyerChatList(),
+        "/makePayment":(context) => MakePayment(),
         "/choose":(context) => Choose(),
         "/coderHome":(context) => CoderHome(),
         "/coderLogin": (context) => CoderLogin(),
@@ -70,7 +72,7 @@ class MyApp extends StatelessWidget {
         "/coderPayment":(context) => CoderPayment(),
         "/coderRequests":(context) => CoderRequests(),
         "/coderChatList":(context) => CoderChatList(),
-        "/coderResponseHistory":(context) => CoderResponseHistory(),
+        "/coderProjectBidders":(context) => CoderProjectBidders(arguments: ModalRoute.of(context)!.settings.arguments)
       },
       initialRoute: "/choose",
     );

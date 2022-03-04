@@ -73,6 +73,7 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
               children: [
                 Expanded(
                     child: TextFormField(
+                      keyboardType: TextInputType.text,
                       autofocus: true,
                       controller: searchController,
                       style: TextStyle(color: Colors.white),
@@ -80,6 +81,14 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
                           hintText: "Search",
                           border: InputBorder.none,
                           fillColor: Colors.white),
+                      onFieldSubmitted: (query){
+                        searchController.clear();
+                        setState(() {
+                          searchOn=false;
+                          search=false;
+                        });
+                        load(query: query);
+                      },
                     )
                 ),
                 SizedBox(width: 10,),
@@ -97,6 +106,10 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
           backgroundColor: Colors.blue,
           // elevation: 0,
           actions: searchOn?[]:[
+            IconButton(onPressed: loading?null:(){
+              load();
+            }, icon: Icon(Icons.refresh),
+            ),
             IconButton(onPressed: loading?null:(){
               setState(() {
                 searchOn=true;
