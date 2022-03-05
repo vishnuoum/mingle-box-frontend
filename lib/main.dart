@@ -6,6 +6,7 @@ import 'package:mingle_box/buyer/pages/home.dart';
 import 'package:mingle_box/buyer/pages/projects.dart';
 import 'package:mingle_box/buyer/pages/login.dart';
 import 'package:mingle_box/buyer/pages/signup.dart';
+import 'package:mingle_box/coder/pages/coderExam.dart';
 import 'package:mingle_box/coder/pages/projectBidders.dart';
 
 import 'buyer/pages/chatList.dart';
@@ -72,7 +73,8 @@ class MyApp extends StatelessWidget {
         "/coderPayment":(context) => CoderPayment(),
         "/coderRequests":(context) => CoderRequests(),
         "/coderChatList":(context) => CoderChatList(),
-        "/coderProjectBidders":(context) => CoderProjectBidders(arguments: ModalRoute.of(context)!.settings.arguments)
+        "/coderProjectBidders":(context) => CoderProjectBidders(arguments: ModalRoute.of(context)!.settings.arguments),
+        "/coderExam":(context) => CoderExam(arguments: ModalRoute.of(context)!.settings.arguments)
       },
       initialRoute: "/choose",
     );

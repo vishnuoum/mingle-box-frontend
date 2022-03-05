@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mingle_box/coder/services/codersTechnology.dart';
 import 'package:mingle_box/coder/services/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,12 +15,15 @@ class CoderProfile extends StatefulWidget {
 class _CoderProfileState extends State<CoderProfile> {
 
   Profile profile=Profile();
+  CodersTechnology codersTechnology=CodersTechnology();
   late SharedPreferences sharedPreferences;
   bool loading=true;
   String loadText="Loading";
 
 
   dynamic result={};
+  dynamic technology=[];
+  bool techLoading=true;
 
   List<Widget> technologies=[];
 
@@ -91,6 +95,7 @@ class _CoderProfileState extends State<CoderProfile> {
       setState(() {
         loading=false;
       });
+      loadTechnology();
     }
     else{
       Future.delayed(Duration(seconds: 5),(){
@@ -100,6 +105,12 @@ class _CoderProfileState extends State<CoderProfile> {
         loadProfile();
       });
     }
+  }
+
+  void loadTechnology()async{
+    var techResult=await codersTechnology.getTechnologyList(tech: result["technology"]);
+    print(techResult);
+    technology=techResult;
   }
 
 
@@ -145,7 +156,36 @@ class _CoderProfileState extends State<CoderProfile> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Technology",style: TextStyle(color: Colors.blue,fontSize: 20,fontWeight: FontWeight.w500),),
-              TextButton.icon(onPressed: (){}, icon: Icon(Icons.add),label: Text("Add New Tech"),)
+              TextButton.icon(onPressed: (){
+
+
+                showModalBottomSheet(enableDrag: true,isScrollControlled: true,shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft: Radius.circular(10))),context: context, builder: (BuildContext context){
+                  return StatefulBuilder(builder: (BuildContext context,setState)
+                  {
+                    return Container(
+                      child: technology=="error"?Center(
+                        child: Text("Something went wrong.",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
+                      ):ListView.separated(
+                          padding: EdgeInsets.only(top: 60),
+                          separatorBuilder: (context, index) {return index==0?SizedBox():Divider(height: 0,indent: 5,endIndent: 5,);},itemCount: technology.length+1,itemBuilder: (BuildContext context,int index){
+                            if(index==0){
+                              return Padding(padding: EdgeInsets.all(15),child: Text("Add Technology",style: TextStyle(color: Colors.blue,fontSize: 25,fontWeight: FontWeight.bold),),);
+                            }
+                            index--;
+                            return ListTile(
+                              onTap: (){
+                                Navigator.pushNamed(context, "/coderExam",arguments: {"technologyId":technology[index]["id"],"technology":technology[index]["technology"]});
+                                print(technology[index]["id"]);
+                              },
+                              contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                              title: Text(technology[index]["technology"])
+                            );
+                          }),
+                      );
+                  });
+                });
+
+              }, icon: Icon(Icons.add),label: Text("Add New Tech"),)
             ],
           ),
           SizedBox(height: 10,),
