@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mingle_box/buyer/services/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BuyerChatList extends StatefulWidget {
   const BuyerChatList({Key? key}) : super(key: key);
@@ -9,11 +12,43 @@ class BuyerChatList extends StatefulWidget {
 
 class _BuyerChatListState extends State<BuyerChatList> {
 
-  dynamic chatList=[
-    {"id":"id","sender":"Sender","msg":"Last message","not read":"10","date":"27/20/2021"},
-    {"id":"id","sender":"Sender","msg":"Last message","not read":"10","date":"27/20/2021"},
-    {"id":"id","sender":"Sender","msg":"Last message","not read":"10","date":"27/20/2021"}
-    ];
+  dynamic result=[];
+
+  bool loading=true;
+  String loadText="Loading";
+  late SharedPreferences sharedPreferences;
+  Service service=Service();
+
+  @override
+  void initState() {
+    load();
+    super.initState();
+  }
+
+  void load()async{
+    sharedPreferences = await SharedPreferences.getInstance();
+    loadChatList();
+  }
+
+  void loadChatList()async{
+    setState(() {});
+    result= await service.buyerChatList(id: sharedPreferences.getString("mail"));
+    print(result);
+    if(result=="error"){
+      Future.delayed(Duration(seconds: 5),(){
+        setState(() {
+          loadText="Something went wrong";
+        });
+        loadChatList();
+      });
+    }
+    else{
+      setState(() {
+        loading=false;
+        loadText="Loading";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,31 +57,38 @@ class _BuyerChatListState extends State<BuyerChatList> {
         title: Text("Chats"),
         elevation: 0,
       ),
-      body: ListView.separated(padding: EdgeInsets.symmetric(horizontal: 10),separatorBuilder: (context, index) {return Divider(height: 0,);},itemCount: chatList.length,itemBuilder: (BuildContext context,int index){
+      body: loading?Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+            SizedBox(height: 10,),
+            Text(loadText)
+          ],
+        ),
+      ):ListView.separated(separatorBuilder: (context, index) {return Divider(height: 0,indent: 5,endIndent: 5,);},itemCount: result.length,itemBuilder: (BuildContext context,int index){
+        DateTime dateTime = DateTime.parse(result[index]["datetime"]);
         return ListTile(
           onTap: (){},
-          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+          contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: CircleAvatar(
             backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
             radius: 25,
-            child: Text(chatList[index]["sender"][0].toUpperCase(),style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+            child: Text(result[index]["chatWith"][0].toUpperCase(),style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("${chatList[index]["sender"]}",style: TextStyle(fontWeight: FontWeight.bold),),
-              Text(chatList[index]["date"],style: TextStyle(fontSize: 14,color: Colors.grey[700]),)
+              Text("${result[index]["chatWith"]}",style: TextStyle(fontWeight: FontWeight.bold),),
+              Text(DateFormat('dd/MM/yyyy').format(dateTime),style: TextStyle(fontSize: 14,color: Colors.grey[700]),)
             ],
           ),
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("${chatList[index]["msg"]}",overflow: TextOverflow.ellipsis,),
-              // CircleAvatar(
-              //   radius: 10,
-              //   backgroundColor: Colors.blue,
-              //   child: Text(chatList[index]["not read"],style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold),),
-              // )
+              Text("${result[index]["message"]}",overflow: TextOverflow.ellipsis,),
+              Text(DateFormat('hh:mm a').format(dateTime))
             ],
           ),
         );

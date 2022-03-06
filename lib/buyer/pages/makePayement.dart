@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mingle_box/buyer/services/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MakePayment extends StatefulWidget {
   const MakePayment({Key? key}) : super(key: key);
@@ -9,8 +11,67 @@ class MakePayment extends StatefulWidget {
 
 class _MakePaymentState extends State<MakePayment> {
 
-  TextEditingController description=TextEditingController(text: ""),senderUID=TextEditingController(text: ""),cardNo=TextEditingController(text: ""),holderName=TextEditingController(text: ""),
+  TextEditingController description=TextEditingController(text: ""),receiverUID=TextEditingController(text: ""),cardNo=TextEditingController(text: ""),holderName=TextEditingController(text: ""),
       cvv=TextEditingController(text: ""), amount=TextEditingController(text: "");
+  late SharedPreferences sharedPreferences;
+  Service service = Service();
+
+  @override
+  void initState() {
+    load();
+    super.initState();
+  }
+
+  void load()async{
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
+
+  Future<void> alertDialog(var text) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Alert'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(text),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  showLoading(BuildContext context){
+    AlertDialog alert =AlertDialog(
+      content: SizedBox(
+        height: 80,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+            SizedBox(height: 10,),
+            Text("Loading")
+          ],
+        ),
+      ),
+    );
+
+    showDialog(context: context,builder:(BuildContext context){
+      return WillPopScope(onWillPop: ()async => false,child: alert);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +104,12 @@ class _MakePaymentState extends State<MakePayment> {
               ),
               child: TextField(
                 keyboardType: TextInputType.text,
-                controller: senderUID,
+                controller: receiverUID,
                 focusNode: null,
                 style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Sender Unique ID'
+                    hintText: 'Receiver Unique ID'
                 ),
               ),
             ),
@@ -155,10 +216,26 @@ class _MakePaymentState extends State<MakePayment> {
             ),
             SizedBox(height: 15,),
             TextButton(onPressed: () async {
-              if (amount.text.length == 0 || holderName.text.length==0 ||
-                  cardNo.text.length == 0 || cvv.text.length==0 || senderUID.text.length==0 ||
-                  description.text.length==0
-              ) {}
+              FocusScope.of(context).unfocus();
+              if (amount.text.length != 0 || holderName.text.length!=0 ||
+                  cardNo.text.length != 0 || cvv.text.length!=0 || receiverUID.text.length!=0 ||
+                  description.text.length!=0
+              ) {
+                showLoading(context);
+                var result = await service.buyerPay(senderId: sharedPreferences.getString("mail"), receiverId: receiverUID.text, amount: amount.text, description: description.text);
+                print(result);
+                if(result=="done"){
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }
+                else{
+                  Navigator.pop(context);
+                  alertDialog("Payment failed. Try again");
+                }
+              }
+              else{
+                alertDialog("Please complete the form!!");
+              }
             },
               child: Text("Make Payment", style: TextStyle(fontSize: 17),),
               style: TextButton.styleFrom(shape: RoundedRectangleBorder(

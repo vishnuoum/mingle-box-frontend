@@ -100,6 +100,24 @@ class Service{
     }
   }
 
+  Future<dynamic> buyerAddRequest({required String? id,required String name, required String description, required dynamic tech})async{
+    try {
+      dynamic response = await post(
+          Uri.parse("http://192.168.18.2:3000/addBuyerRequest"),body: {"id":id,"name":name,"description":description,"technology":jsonEncode(tech)});
+      if(response.body=="done"){
+        return "done";
+      }
+      else{
+        return "error";
+      }
+    }
+    catch(e){
+      print(e);
+      print("edit profile exception");
+      return "error";
+    }
+  }
+
   Future<dynamic> buyerRequestHistory({required String? id})async{
     try {
       dynamic response = await post(
@@ -114,6 +132,28 @@ class Service{
     }
   }
 
+  Future<dynamic> buyerPay({required String? senderId,required String receiverId,required String amount,required String description})async{
+    try {
+      Response response = await post(Uri.parse("http://192.168.18.2:3000/buyerPay"),
+          body: {
+            "senderId": senderId,
+            "receiverId": receiverId,
+            "amount": amount,
+            "description": description
+          });
+      if (response.body == "done") {
+        return "done";
+      }
+      else {
+        return "error";
+      }
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
+
   Future<dynamic> buyerPaymentHistory({required String? id})async{
     try {
       dynamic response = await post(
@@ -124,6 +164,35 @@ class Service{
     catch(e){
       print(e);
       print("edit profile exception");
+      return "error";
+    }
+  }
+
+  Future<dynamic> buyerChatList({required String? id})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/buyerChatList"),
+          body: {"id": id});
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      return "error";
+    }
+  }
+
+  Future<dynamic> buyerBid({required String? id,required String projectId,required String amount})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/buyerBid"),
+          body: {"id": id,"projectId":projectId,"amount":amount});
+      if(response.body=="done"){
+        return "done";
+      }
+      else{
+        return "error";
+      }
+    }
+    catch(e){
       return "error";
     }
   }

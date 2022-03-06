@@ -132,18 +132,20 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
         ):search?SizedBox():ListView.separated(
             separatorBuilder: (context, index) => Divider(
               color: Colors.black,
-              thickness: 0.05,
+              thickness: 0.1,
               height: 0,
+              indent: 5,
+              endIndent: 5,
             ),
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.only(top: 8),
             itemCount: coders.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
                 onTap: (){},
-                contentPadding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
                 leading: CircleAvatar(
-                  radius: 25,
-                  child: Text(coders[index]["username"][0],style: TextStyle(fontSize: 17),),
+                  radius: 30,
+                  child: Text(coders[index]["username"][0].toUpperCase(),style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                 ),

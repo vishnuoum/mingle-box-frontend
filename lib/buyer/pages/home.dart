@@ -49,6 +49,7 @@ class _BuyerHomeState extends State<BuyerHome> {
   }
 
   void load()async{
+    setState(() {});
     result= await service.loadDashboard(id: sharedPreferences.getString("mail"));
     if(result=="error"){
       setState(() {
@@ -131,9 +132,11 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
             ListTile(
               title: Text("Request History"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerRequestHistory");
+                await Navigator.pushNamed(context, "/buyerRequestHistory");
+                loading=true;
+                load();
               },
             ),
             ListTile(
@@ -145,9 +148,11 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
             ListTile(
               title: Text("Payment"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerPayment");
+                await Navigator.pushNamed(context, "/buyerPayment");
+                loading=true;
+                load();
               },
             ),
             ListTile(

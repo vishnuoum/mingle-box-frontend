@@ -173,9 +173,12 @@ class _CoderProfileState extends State<CoderProfile> {
                             }
                             index--;
                             return ListTile(
-                              onTap: (){
-                                Navigator.pushNamed(context, "/coderExam",arguments: {"technologyId":technology[index]["id"],"technology":technology[index]["technology"]});
+                              onTap: ()async{
+                                Navigator.pop(context);
+                                await Navigator.pushNamed(context, "/coderExam",arguments: {"technologyId":technology[index]["id"],"technology":technology[index]["technology"]});
                                 print(technology[index]["id"]);
+                                loading=true;
+                                loadProfile();
                               },
                               contentPadding: EdgeInsets.symmetric(horizontal: 15),
                               title: Text(technology[index]["technology"])

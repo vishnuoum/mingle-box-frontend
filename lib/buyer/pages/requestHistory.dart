@@ -35,6 +35,7 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
   }
 
   void load()async{
+    setState(() {});
     requests=await service.buyerRequestHistory(id: sharedPreferences.getString("mail"));
     if(requests=="error"){
       setState(() {
@@ -73,7 +74,8 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
             padding: const EdgeInsets.all(10),
             itemCount: requests.length,
             itemBuilder: (BuildContext context, int index) {
-              requests[index]["technology"]=json.decode(requests[index]["technology"]);
+              if(requests[index]["technology"] is String)
+                requests[index]["technology"]=json.decode(requests[index]["technology"]);
               return ExpansionTile(
                   title: Text(requests[index]["name"],style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
                   subtitle: Text("Responses: ${requests[index]["responses"]}",style: TextStyle(fontSize: 15)),
@@ -96,6 +98,14 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
               );
             }
         ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: ()async{
+          await Navigator.pushNamed(context, "/buyerRequest");
+          loading=true;
+          load();
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

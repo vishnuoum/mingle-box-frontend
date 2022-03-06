@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:mingle_box/buyer/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +38,7 @@ class _BuyerPaymentState extends State<BuyerPayment> {
   }
 
   void load()async{
+    setState(() {});
     history=await service.buyerPaymentHistory(id: sharedPreferences.getString("mail"));
     if(history=="error"){
       setState(() {
@@ -94,8 +97,10 @@ class _BuyerPaymentState extends State<BuyerPayment> {
       }),
       floatingActionButton: FloatingActionButton.extended(
         label: Text("New Payment"),
-        onPressed: (){
-          Navigator.pushNamed(context, "/makePayment");
+        onPressed: ()async{
+          await Navigator.pushNamed(context, "/makePayment");
+          loading=true;
+          load();
         },
       ),
     );

@@ -13,6 +13,7 @@ import 'buyer/pages/chatList.dart';
 import 'buyer/pages/makePayement.dart';
 import 'buyer/pages/payment.dart';
 import 'buyer/pages/profile.dart';
+import 'buyer/pages/request.dart';
 import 'buyer/pages/requestHistory.dart';
 import 'buyer/pages/searchCoders.dart';
 import 'coder/pages/chatList.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         "/buyerPayment":(context) => BuyerPayment(),
         "/buyerChatList":(context) => BuyerChatList(),
         "/makePayment":(context) => MakePayment(),
+        "/buyerRequest":(context) => BuyerRequest(),
         "/choose":(context) => Choose(),
         "/coderHome":(context) => CoderHome(),
         "/coderLogin": (context) => CoderLogin(),
