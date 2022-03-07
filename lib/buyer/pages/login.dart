@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mingle_box/buyer/services/registration.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BuyerLogin extends StatefulWidget {
@@ -142,6 +143,7 @@ class _BuyerLoginState extends State<BuyerLogin> {
                     Navigator.pop(context);
                     sharedPreferences.setString("type", "buyer");
                     sharedPreferences.setString("mail", result["id"]);
+                    OneSignal.shared.setExternalUserId(eMail.text);
                     Navigator.pushReplacementNamed(context, "/buyerHome");
                   }
                   else{

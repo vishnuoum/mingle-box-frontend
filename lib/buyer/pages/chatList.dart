@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mingle_box/buyer/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+
+dynamic result=[];
 
 class BuyerChatList extends StatefulWidget {
   const BuyerChatList({Key? key}) : super(key: key);
@@ -12,9 +15,8 @@ class BuyerChatList extends StatefulWidget {
 
 class _BuyerChatListState extends State<BuyerChatList> {
 
-  dynamic result=[];
-
-  bool loading=true;
+  bool loading=true,connecting=true;
+  late Socket socket;
   String loadText="Loading";
   late SharedPreferences sharedPreferences;
   Service service=Service();
@@ -23,6 +25,39 @@ class _BuyerChatListState extends State<BuyerChatList> {
   void initState() {
     load();
     super.initState();
+  }
+
+  void init()async{
+    try {
+      socket = io('http://192.168.18.2:3000', <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false,
+      });
+
+      // Connect to web socket
+      socket.connect();
+      socket.on('connect', (_){
+        setState(() {
+          connecting=false;
+        });
+        print('connected');
+      });
+
+      socket.emit('userId', {"userId":sharedPreferences.getString("mail")});
+
+      socket.on('message',(data) {
+        print(data);
+      });
+      socket.emit("connection");
+    }catch(e){
+      setState(() {
+        loadText="Something went wrong";
+      });
+      print(e);
+      Future.delayed(Duration(seconds: 5),(){
+        init();
+      });
+    }
   }
 
   void load()async{
@@ -48,6 +83,14 @@ class _BuyerChatListState extends State<BuyerChatList> {
         loadText="Loading";
       });
     }
+    init();
+  }
+
+  @override
+  void dispose() {
+    socket.emit("userDisconnection",{"userId":sharedPreferences.getString("mail")});
+    socket.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,7 +100,7 @@ class _BuyerChatListState extends State<BuyerChatList> {
         title: Text("Chats"),
         elevation: 0,
       ),
-      body: loading?Center(
+      body: loading&&connecting?Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -69,7 +112,9 @@ class _BuyerChatListState extends State<BuyerChatList> {
       ):ListView.separated(separatorBuilder: (context, index) {return Divider(height: 0,indent: 5,endIndent: 5,);},itemCount: result.length,itemBuilder: (BuildContext context,int index){
         DateTime dateTime = DateTime.parse(result[index]["datetime"]);
         return ListTile(
-          onTap: (){},
+          onTap: (){
+            print(result[index]["chatWithId"]);
+          },
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
           leading: CircleAvatar(
             backgroundColor: Colors.blue,

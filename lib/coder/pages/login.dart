@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mingle_box/coder/services/registration.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CoderLogin extends StatefulWidget {
@@ -145,6 +146,7 @@ class _CoderLoginState extends State<CoderLogin> {
                     Navigator.pop(context);
                     sharedPreferences.setString("type", "coder");
                     sharedPreferences.setString("mail", result["id"]);
+                    OneSignal.shared.setExternalUserId(eMail.text);
                     Navigator.pushReplacementNamed(context, "/coderHome");
                   }
                   else{

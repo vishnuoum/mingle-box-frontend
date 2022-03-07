@@ -24,6 +24,7 @@ import 'coder/pages/profile.dart';
 import 'coder/pages/projects.dart';
 import 'coder/pages/requests.dart';
 import 'coder/pages/signup.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() {
 
@@ -34,8 +35,34 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+
+
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    initOneSignal();
+    super.initState();
+  }
+
+  void initOneSignal()async{
+    //Remove this method to stop OneSignal Debugging
+    OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+
+    OneSignal.shared.setAppId("94000518-7da5-44a5-a338-7efd79d09099");
+
+// The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
