@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mingle_box/coder/services/buyersRequest.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class CoderRequests extends StatefulWidget {
   const CoderRequests({Key? key}) : super(key: key);
@@ -12,13 +14,46 @@ class _CoderRequestsState extends State<CoderRequests> {
 
   dynamic result=[];
   BuyersRequest buyersRequest=BuyersRequest();
+  late Socket socket;
   bool loading=true;
   String loadText="Loading";
+  late SharedPreferences sharedPreferences;
 
   @override
   void initState() {
-    loadRequests();
+    load();
     super.initState();
+  }
+
+  void load()async{
+    sharedPreferences=await SharedPreferences.getInstance();
+    init();
+  }
+
+  void init()async{
+    try {
+      socket = io('http://192.168.18.2:3000', <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false,
+      });
+
+      // Connect to web socket
+      socket.connect();
+      socket.on('connect', (_){
+        print('connected');
+      });
+
+      socket.emit('userId', {"userId":sharedPreferences.getString("mail")});
+
+      socket.emit("connection");
+
+    }catch(e){
+      print(e);
+      Future.delayed(Duration(seconds: 5),(){
+        init();
+      });
+    }
+    loadRequests();
   }
 
   void loadRequests()async{
@@ -71,7 +106,9 @@ class _CoderRequestsState extends State<CoderRequests> {
             title: Text("${result[index]["name"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
             subtitle: Text("${result[index]["username"]}",style: TextStyle(fontSize: 15),),
             trailing: IconButton(icon: Icon(Icons.chat),onPressed: (){
-
+              print(result[index]);
+              socket.emit('sendMessage', {"sender":sharedPreferences.getString("mail"),"senderType":"coder","message":"Interested in ${result[index]["name"]}","receiver":result[index]["buyerId"],"receiverType":"buyer"});
+              buyersRequest.respond(coderId: sharedPreferences.getString("mail"), requestId: result[index]["id"]);
             },color: Colors.blue,),
             expandedAlignment: Alignment.topLeft,
             childrenPadding: EdgeInsets.all(10),

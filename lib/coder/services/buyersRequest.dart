@@ -15,4 +15,14 @@ class BuyersRequest{
       return "error";
     }
   }
+
+  Future<dynamic> respond({required String? coderId,required int requestId})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/coderRespond"),body: {"coderId":coderId,"requestId":requestId.toString()});
+    }
+    catch(e){
+      print(e);
+    }
+  }
 }
