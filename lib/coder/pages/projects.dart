@@ -39,6 +39,7 @@ class _CoderProjectsState extends State<CoderProjects> {
   }
 
   void loadProjects()async{
+    setState(() {});
     result=await project.projectList(id: sharedPreferences.getString("mail"));
     print(result);
     if(result=="error"){
@@ -72,6 +73,12 @@ class _CoderProjectsState extends State<CoderProjects> {
               Text("Project Cost",style: TextStyle(fontWeight: FontWeight.bold)),
               Text(result[index]["cost"]),
               SizedBox(height: 10,),
+              Text("Project Bid Cost",style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(result[index]["finalCost"]==null?"----":result[index]["finalCost"]),
+              SizedBox(height: 10,),
+              Text("Project Buyer",style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(result[index]["buyer"]==null?"----":result[index]["buyer"]),
+              SizedBox(height: 10,),
               Text("Technology",style: TextStyle(fontWeight: FontWeight.bold)),
               Text(result[index]["technology"].substring(1,result[index]["technology"].length-1).replaceAll(RegExp(r'"'), "")),
               SizedBox(height: 10,),
@@ -82,7 +89,7 @@ class _CoderProjectsState extends State<CoderProjects> {
               Text("Rs. ${result[index]["largestBid"]}"),
               SizedBox(height: 10,),
               Text("Status",style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(result[index]["finalBid"]==null?"On Bid":"Completed"),
+              Text(result[index]["finalCost"]==null?"On Bid":"Completed"),
               SizedBox(height: 10,),
               Text("Description",style: TextStyle(fontWeight: FontWeight.bold)),
               Text(result[index]["description"]),
@@ -222,14 +229,14 @@ class _CoderProjectsState extends State<CoderProjects> {
                                   children: [
                                     Text(result[index]["name"],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
                                     SizedBox(height: 3,),
-                                    Text("${result[index]["finalCost"]==null? "Largest Bid":"Bid"} : Rs.${result[index]["largestBid"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+                                    Text("${result[index]["finalCost"]==null? "Largest Bid : Rs.${result[index]["largestBid"]}":"Bid : Rs.${result[index]["finalCost"]}"}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
                                   ],
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                 )
                             ),
-                            ClipOval(
+                            result[index]["finalCost"]==null?ClipOval(
                               child: Material(
                                 color: Colors.blue, // Button color
                                 child: InkWell(
@@ -238,13 +245,15 @@ class _CoderProjectsState extends State<CoderProjects> {
                                   hoverColor: Colors.blue[700],
                                   highlightColor: Colors.blue[700],
                                   onTap: () async{
-                                    Navigator.pushNamed(context, "/coderProjectBidders",arguments: {"id":result[index]["id"]});
+                                    await Navigator.pushNamed(context, "/coderProjectBidders",arguments: {"id":result[index]["id"]});
                                     // await canLaunch("tel:${result[index]["phone"]}") ? await launch("tel:${result[index]["phone"]}") : throw 'Could not launch phone app';
+                                    loading=true;
+                                    loadProjects();
                                   },
                                   child: SizedBox(width: 56, height: 56, child: Icon(Icons.arrow_forward,color: Colors.white,)),
                                 ),
                               ),
-                            )
+                            ):SizedBox()
                           ],
                         ),
                       )

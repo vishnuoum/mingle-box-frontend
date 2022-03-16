@@ -15,6 +15,7 @@ import 'buyer/pages/payment.dart';
 import 'buyer/pages/profile.dart';
 import 'buyer/pages/request.dart';
 import 'buyer/pages/requestHistory.dart';
+import 'buyer/pages/responders.dart';
 import 'buyer/pages/searchCoders.dart';
 import 'coder/pages/chatList.dart';
 import 'coder/pages/home.dart';
@@ -93,6 +94,7 @@ class _MyAppState extends State<MyApp> {
         "/buyerChatList":(context) => BuyerChatList(),
         "/makePayment":(context) => MakePayment(),
         "/buyerRequest":(context) => BuyerRequest(),
+        "/buyerResponders":(context) => BuyerResponders(arguments: ModalRoute.of(context)!.settings.arguments as Map),
         "/choose":(context) => Choose(),
         "/coderHome":(context) => CoderHome(),
         "/coderLogin": (context) => CoderLogin(),

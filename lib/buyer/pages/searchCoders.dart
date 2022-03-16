@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mingle_box/buyer/services/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class BuyerSearchCoders extends StatefulWidget {
   const BuyerSearchCoders({Key? key}) : super(key: key);
@@ -17,6 +19,8 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
   bool searchOn=false;
   bool search=false;
   TextEditingController searchController=TextEditingController(text: "");
+  late Socket socket;
+  late SharedPreferences sharedPreferences;
 
   dynamic coders=[
     {"id":"123","name":"name"},
@@ -27,8 +31,39 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
 
   @override
   void initState() {
-    load();
+    loadSP();
     super.initState();
+  }
+
+  void loadSP()async{
+    sharedPreferences = await SharedPreferences.getInstance();
+    init();
+  }
+
+  void init()async{
+    try {
+      socket = io('http://192.168.18.2:3000', <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false,
+      });
+
+      // Connect to web socket
+      socket.connect();
+      socket.on('connect', (_){
+        print('connected');
+      });
+
+      socket.emit('userId', {"userId":sharedPreferences.getString("mail")});
+
+      socket.emit("connection");
+
+    }catch(e){
+      print(e);
+      Future.delayed(Duration(seconds: 5),(){
+        init();
+      });
+    }
+    load();
   }
 
   void load({String query=""})async{
@@ -129,7 +164,7 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
               Text(text)
             ],
           ),
-        ):search?SizedBox():ListView.separated(
+        ):search?SizedBox():coders.length==0?Center(child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 18),),):ListView.separated(
             separatorBuilder: (context, index) => Divider(
               color: Colors.black,
               thickness: 0.1,
@@ -151,7 +186,11 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
                 ),
                 title: Text("${coders[index]["username"]}"),
                 trailing: IconButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    print(coders[index]);
+                    socket.emit('sendMessage', {"sender":sharedPreferences.getString("mail"),"senderType":"buyer","message":"Hi","receiver":coders[index]["id"],"receiverType":"coder"});
+                  },
+                  tooltip: "Say Hi to ${coders[index]["username"]}",
                   color: Colors.blue,
                   icon: Icon(Icons.chat),
                 ),

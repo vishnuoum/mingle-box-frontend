@@ -14,4 +14,17 @@ class Chat{
       return "error";
     }
   }
+
+  Future<dynamic> chatHistory({required String? id,required String chatWithId})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/coderChatHistory"),
+          body: {"id": id,"chatWithId":chatWithId});
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
 }

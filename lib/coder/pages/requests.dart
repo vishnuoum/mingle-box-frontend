@@ -110,7 +110,8 @@ class _CoderRequestsState extends State<CoderRequests> {
               socket.emit('sendMessage', {"sender":sharedPreferences.getString("mail"),"senderType":"coder","message":"Interested in ${result[index]["name"]}","receiver":result[index]["buyerId"],"receiverType":"buyer"});
               buyersRequest.respond(coderId: sharedPreferences.getString("mail"), requestId: result[index]["id"]);
             },color: Colors.blue,),
-            expandedAlignment: Alignment.topLeft,
+            expandedAlignment: Alignment.bottomLeft,
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.all(10),
             children: [
               Text("Description",style: TextStyle(fontWeight: FontWeight.bold),),

@@ -113,7 +113,6 @@ class _CoderChatListState extends State<CoderChatList> {
 
   void showChat({required String sender,required String senderName}){
     senderId=sender;
-    messages=[];
     loadSocket=true;
     print("hello");
     showModalBottomSheet(enableDrag: true,isScrollControlled: true,shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft: Radius.circular(10))),context: context, builder: (BuildContext context){
@@ -302,8 +301,13 @@ class _CoderChatListState extends State<CoderChatList> {
       ):ListView.separated(separatorBuilder: (context, index) {return Divider(height: 0,indent: 5,endIndent: 5,);},itemCount: result.length,itemBuilder: (BuildContext context,int index){
         DateTime dateTime = DateTime.parse(result[index]["datetime"]);
         return ListTile(
-          onTap: (){
+          onTap: ()async{
+            messages=[];
             print(result[index]["chatWithId"]);
+            var res=await chat.chatHistory(id: sharedPreferences.getString("mail"), chatWithId: result[index]["chatWithId"]);
+            print(res);
+            if(res!="error")
+              messages=res;
             showChat(sender: result[index]["chatWithId"],senderName: result[index]["chatWith"]);
           },
           contentPadding: EdgeInsets.symmetric(horizontal: 15),

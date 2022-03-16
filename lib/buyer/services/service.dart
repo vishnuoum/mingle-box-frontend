@@ -180,6 +180,19 @@ class Service{
     }
   }
 
+  Future<dynamic> buyerChatHistory({required String? id,required String chatWithId})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/buyerChatHistory"),
+          body: {"id": id,"chatWithId":chatWithId});
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
+
   Future<dynamic> buyerBid({required String? id,required String projectId,required String amount})async{
     try {
       Response response = await post(
@@ -191,6 +204,18 @@ class Service{
       else{
         return "error";
       }
+    }
+    catch(e){
+      return "error";
+    }
+  }
+
+  Future<dynamic> buyerRequestResponders({required String? id})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/buyerRequestResponders"),
+          body: {"requestId": id,});
+      return jsonDecode(response.body);
     }
     catch(e){
       return "error";

@@ -48,4 +48,22 @@ class Project{
       return "error";
     }
   }
+
+  Future<dynamic> coderSelectBidder({required String? id,required String buyerId,required String projectId,required String amount})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/coderSelectBidder"),
+          body: {"id": id,"buyerId":buyerId,"projectId":projectId,"finalCost":amount});
+      if(response.body=="done"){
+        return "done";
+      }
+      else{
+        return "error";
+      }
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
 }

@@ -71,7 +71,7 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
             ],
           ),
         ):requests.length==0?Center(child: Text("Nothing to Show"),):ListView.builder(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(top: 10,bottom: 80,left: 10,right: 10),
             itemCount: requests.length,
             itemBuilder: (BuildContext context, int index) {
               if(requests[index]["technology"] is String)
@@ -94,7 +94,9 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
                         return Divider(height: 0,);
                       },
               ),],
-                trailing: IconButton(color: Colors.blue,icon: Icon(Icons.person),onPressed: (){},tooltip: "Coders Responded",),
+                trailing: IconButton(color: Colors.blue,icon: Icon(Icons.person),onPressed: (){
+                  Navigator.pushNamed(context, "/buyerResponders",arguments: {"id":requests[index]["id"]});
+                },tooltip: "Coders Responded",),
               );
             }
         ),
