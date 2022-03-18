@@ -87,6 +87,9 @@ class _CoderChatListState extends State<CoderChatList> {
     setState(() {});
     result= await chat.chatList(id: sharedPreferences.getString("mail"));
     print(result);
+    if(result.length!=0 && result[0]["message"]==null){
+      result=[];
+    }
     if(result=="error"){
       Future.delayed(Duration(seconds: 5),(){
         setState(() {
@@ -298,6 +301,8 @@ class _CoderChatListState extends State<CoderChatList> {
             Text(loadText)
           ],
         ),
+      ):result.length==0?Center(
+        child: Text("No chats to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
       ):ListView.separated(separatorBuilder: (context, index) {return Divider(height: 0,indent: 5,endIndent: 5,);},itemCount: result.length,itemBuilder: (BuildContext context,int index){
         DateTime dateTime = DateTime.parse(result[index]["datetime"]);
         return ListTile(

@@ -267,6 +267,8 @@ class _BuyerProjectsState extends State<BuyerProjects> {
               Text(text)
             ],
           ),
+        ):projectList.length==0?Center(
+          child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
         ):ListView.builder(
           itemCount: projectList.length,
           padding: EdgeInsets.only(left: 10,right: 10,top: 20),

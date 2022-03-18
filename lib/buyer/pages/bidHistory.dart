@@ -220,6 +220,8 @@ class _BuyerBidHistoryState extends State<BuyerBidHistory> {
               Text(text)
             ],
           ),
+        ):bidHistory.length==0?Center(
+          child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
         ):ListView.builder(
             padding: const EdgeInsets.all(8),
             itemCount: bidHistory.length,

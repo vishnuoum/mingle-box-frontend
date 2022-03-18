@@ -92,6 +92,8 @@ class _CoderRequestsState extends State<CoderRequests> {
             Text(loadText)
           ],
         ),
+      ):result.length==0?Center(
+        child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
       ):ListView.separated(
         padding: EdgeInsets.only(top: 5),
         itemCount: result.length,

@@ -174,6 +174,8 @@ class _CoderProjectsState extends State<CoderProjects> {
               Text(loadText)
             ],
           ),
+        ):result.length==0?Center(
+          child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
         ):ListView.builder(
             itemCount: result.length,
             padding: EdgeInsets.all(10),
