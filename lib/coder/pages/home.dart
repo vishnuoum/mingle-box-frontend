@@ -86,15 +86,15 @@ class _CoderHomeState extends State<CoderHome> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CircleAvatar(
-                    child: Text("U",style: TextStyle(fontSize: 30),),
+                    child: Text("M",style: TextStyle(fontSize: 30),),
                     foregroundColor: Colors.blue,
                     backgroundColor: Colors.white,
                     radius: 35,
                   ),
                   SizedBox(height: 15,),
-                  Text(result[0]["username"],style: TextStyle(color: Colors.white,fontSize: 18),),
+                  Text(loading?"Username":result[0]["username"],style: TextStyle(color: Colors.white,fontSize: 18),),
                   SizedBox(height: 5,),
-                  Text(result[0]["mail"],style: TextStyle(color: Colors.white),)
+                  Text(loading?"Mail":result[0]["mail"],style: TextStyle(color: Colors.white),)
                 ],
               ),
               decoration: BoxDecoration(
