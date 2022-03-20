@@ -8,6 +8,7 @@ import 'package:mingle_box/buyer/pages/login.dart';
 import 'package:mingle_box/buyer/pages/signup.dart';
 import 'package:mingle_box/coder/pages/coderExam.dart';
 import 'package:mingle_box/coder/pages/projectBidders.dart';
+import 'package:mingle_box/coder/pages/techInfo.dart';
 
 import 'buyer/pages/chatList.dart';
 import 'buyer/pages/makePayement.dart';
@@ -105,7 +106,8 @@ class _MyAppState extends State<MyApp> {
         "/coderRequests":(context) => CoderRequests(),
         "/coderChatList":(context) => CoderChatList(),
         "/coderProjectBidders":(context) => CoderProjectBidders(arguments: ModalRoute.of(context)!.settings.arguments),
-        "/coderExam":(context) => CoderExam(arguments: ModalRoute.of(context)!.settings.arguments)
+        "/coderExam":(context) => CoderExam(arguments: ModalRoute.of(context)!.settings.arguments),
+        "/coderTechInfo":(context) => CoderTechInfo(arguments: ModalRoute.of(context)!.settings.arguments as Map)
       },
       initialRoute: "/choose",
     );

@@ -199,6 +199,9 @@ class _CoderProfileState extends State<CoderProfile> {
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(result["technology"][index]),
+                onTap: (){
+                  Navigator.pushNamed(context, "/coderTechInfo",arguments: {"tech":result["technology"][index],"id":sharedPreferences.getString("mail")});
+                },
               );
             },
             separatorBuilder: (context, index) {

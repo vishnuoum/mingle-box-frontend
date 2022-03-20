@@ -29,4 +29,19 @@ class CoderExamClass{
       return "error";
     }
   }
+
+  Future<dynamic> coderTechInfo({required String technology,required String? id})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/coderTechInfo"),
+          body: {"id": id,"technology":technology});
+      print(response.body);
+      return jsonDecode(response.body);
+
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
 }
