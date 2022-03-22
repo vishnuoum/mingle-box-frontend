@@ -56,6 +56,10 @@ class _BuyerChatListState extends State<BuyerChatList> {
             result[i]["datetime"]=data["dateTime"];
             result[i]["message"]=data["message"];
             flag=false;
+            var temp=result[0];
+            result[0]=result[i];
+            result[i]=temp;
+            break;
           }
         }
         if(flag){
@@ -87,7 +91,7 @@ class _BuyerChatListState extends State<BuyerChatList> {
     setState(() {});
     result= await service.buyerChatList(id: sharedPreferences.getString("mail"));
     print(result);
-    if(result.length!=0 && result[0]["message"]==null){
+    if(result=="error" || (result.length!=0 && result[0]["message"]==null)){
       result=[];
     }
     if(result=="error"){

@@ -138,7 +138,15 @@ class _CoderProfileState extends State<CoderProfile> {
       ListView(
         padding: EdgeInsets.only(top: 20,left: 15,right: 15),
         children: [
-          Text("Profile",style: TextStyle(color: Colors.blue,fontSize: 28,fontWeight: FontWeight.bold),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Profile",style: TextStyle(color: Colors.blue,fontSize: 28,fontWeight: FontWeight.bold),),
+              IconButton(onPressed: (){
+                Navigator.pushNamed(context, "/coderPasswordReset",arguments: {"id":sharedPreferences.getString("mail")});
+              }, icon: Icon(Icons.vpn_key),color: Colors.blue,tooltip: "Change Password",)
+            ],
+          ),
           SizedBox(height: 30,),
           Text("Username",style: TextStyle(color: Colors.blue,fontSize: 20,fontWeight: FontWeight.w500),),
           SizedBox(height: 10,),

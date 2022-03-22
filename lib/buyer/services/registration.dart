@@ -32,4 +32,20 @@ class BuyerRegistration{
       return "error";
     }
   }
+
+  Future<dynamic> changePassword({required String id,required String oldPassword,required String newPassword}) async{
+    try {
+      dynamic response = await post(
+          Uri.parse("http://192.168.18.2:3000/buyerPasswordReset"), body: {"id": id, "password": oldPassword,"newPassword":newPassword});
+      print(response.body);
+      if(response.body=="done")
+        return "done";
+      else
+        return "error";
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
 }

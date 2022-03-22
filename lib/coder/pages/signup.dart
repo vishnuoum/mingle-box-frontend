@@ -20,6 +20,12 @@ class _CoderSignupState extends State<CoderSignup> {
 
   String? dropValue="Select an option";
 
+  bool validateStructure(String value){
+    String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regExp = new RegExp(pattern);
+    return regExp.hasMatch(value);
+  }
+
   @override
   void initState() {
     load();
@@ -200,6 +206,15 @@ class _CoderSignupState extends State<CoderSignup> {
                   }
                   if(password.text!=repeatPassword.text){
                     alertDialog("Passwords doesn't match");
+                    return;
+                  }
+                  if(password.text.length<8){
+                    alertDialog("Password must be of at least 8 characters in length");
+                    return;
+                  }
+                  if(!validateStructure(password.text)){
+                    alertDialog("Password must be a combination of uppercase, lowercase and special characters (@,\$,!,#,&,* allowed)");
+                    return;
                   }
                   showLoading(context);
                   dynamic result=await registration.signup(mail: eMail.text, username:name.text, password: password.text);
@@ -213,7 +228,7 @@ class _CoderSignupState extends State<CoderSignup> {
                   }
                   else{
                     Navigator.pop(context);
-                    alertDialog("Something went wrong. Try again later");
+                    alertDialog("Something went wrong. Try again later. Please check whether you are already registered.");
                   }
                 },
               ),

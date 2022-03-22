@@ -56,6 +56,10 @@ class _CoderChatListState extends State<CoderChatList> {
             result[i]["datetime"]=data["dateTime"];
             result[i]["message"]=data["message"];
             flag=false;
+            var temp=result[0];
+            result[0]=result[i];
+            result[i]=temp;
+            break;
           }
         }
         if(flag){
