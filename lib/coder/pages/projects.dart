@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:mingle_box/coder/services/project.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +23,7 @@ class _CoderProjectsState extends State<CoderProjects> {
   late SharedPreferences sharedPreferences;
   bool loading=true;
   String loadText="Loading";
+  DateFormat format = DateFormat("dd/MM/yyyy");
 
   Project project=Project();
 
@@ -84,6 +86,9 @@ class _CoderProjectsState extends State<CoderProjects> {
               SizedBox(height: 10,),
               Text("Added Date",style: TextStyle(fontWeight: FontWeight.bold)),
               Text("${DateTime.parse(result[index]["timestamp"]).day}/${DateTime.parse(result[index]["timestamp"]).month}/${DateTime.parse(result[index]["timestamp"]).year}"),
+              SizedBox(height: 10,),
+              Text("Bid Completed on",style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(result[index]["buyer"]==null?"----":format.format(DateTime.parse(result[index]["completeDate"]))),
               SizedBox(height: 10,),
               Text("Largest Bid",style: TextStyle(fontWeight: FontWeight.bold)),
               Text("Rs. ${result[index]["largestBid"]}"),

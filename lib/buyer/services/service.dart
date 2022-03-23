@@ -222,4 +222,17 @@ class Service{
     }
   }
 
+  Future<dynamic> viewCoderProfile({required String id})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.2:3000/viewCoderProfile"),
+          body: {"id": id,});
+      print(response.body);
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      return "error";
+    }
+  }
+
 }

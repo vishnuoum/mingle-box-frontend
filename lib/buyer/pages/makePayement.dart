@@ -94,7 +94,7 @@ class _MakePaymentState extends State<MakePayment> {
                 fontWeight: FontWeight.bold),),
               alignment: Alignment.centerLeft,),
             SizedBox(height: 40,),
-            Text("Sender Unique ID"),
+            Text("Receiver Unique ID"),
             Container(
               margin: EdgeInsets.only(top: 10),
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mingle_box/buyer/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +16,7 @@ class _BuyerBidHistoryState extends State<BuyerBidHistory> {
 
   bool loading=true;
   String text="Loading";
+  DateFormat formatter = DateFormat('dd/MM/yyyy');
 
   late SharedPreferences sharedPreferences;
   Service service=Service();
@@ -247,8 +250,17 @@ class _BuyerBidHistoryState extends State<BuyerBidHistory> {
                     ):null,
                   ),
                   ListTile(
-                    title: Text("Bid Date: ${bidHistory[index]["datetime"]}"),
-                  )
+                    title: Text("Bid Date: ${formatter.format(DateTime.parse(bidHistory[index]["datetime"]))}"),
+                  ),
+                  bidHistory[index]["status"]=="Won"?ListTile(
+                    title: Text("Won date: ${formatter.format(DateTime.parse(bidHistory[index]["completeDate"]))}"),
+                  ):SizedBox(),
+                  bidHistory[index]["status"]!="Won"?SizedBox():TextButton.icon(onPressed: (){
+                    Clipboard.setData(ClipboardData(text: bidHistory[index]["coderId"]));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Copied"),
+                    ));
+                  }, icon: Icon(Icons.copy), label: Text("Copy Coder Unique ID"))
                 ],
               );
             }

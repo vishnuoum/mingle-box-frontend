@@ -48,6 +48,7 @@ class _CoderHomeState extends State<CoderHome> {
   }
 
   void loadDash()async{
+    setState(() {});
     result=await dashboard.fetch(id: sharedPreferences.getString("mail"));
     print(result.runtimeType);
     if(result!="error") {
@@ -103,37 +104,47 @@ class _CoderHomeState extends State<CoderHome> {
             ),
             ListTile(
               title: Text("Chats"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/coderChatList");
+                await Navigator.pushNamed(context, "/coderChatList");
+                loading=true;
+                loadDash();
               },
             ),
             ListTile(
               title: Text("My Projects"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/coderProjects");
+                await Navigator.pushNamed(context, "/coderProjects");
+                loading=true;
+                loadDash();
               },
             ),
             ListTile(
               title: Text("Requests"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/coderRequests");
+                await Navigator.pushNamed(context, "/coderRequests");
+                loading=true;
+                loadDash();
               },
             ),
             ListTile(
               title: Text("Profile"),
-              onTap: (){
+              onTap: ()async {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/coderProfile");
+                await Navigator.pushNamed(context, "/coderProfile");
+                loading=true;
+                loadDash();
               },
             ),
             ListTile(
               title: Text("Payments"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/coderPayment");
+                await Navigator.pushNamed(context, "/coderPayment");
+                loading=true;
+                loadDash();
               },
             ),
             ListTile(

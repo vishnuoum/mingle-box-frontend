@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mingle_box/buyer/pages/bidHistory.dart';
+import 'package:mingle_box/buyer/pages/buyerViewCoderProfile.dart';
 import 'package:mingle_box/choose.dart';
 import 'package:mingle_box/buyer/pages/home.dart';
 import 'package:mingle_box/buyer/pages/projects.dart';
@@ -99,6 +100,7 @@ class _MyAppState extends State<MyApp> {
         "/buyerRequest":(context) => BuyerRequest(),
         "/buyerResponders":(context) => BuyerResponders(arguments: ModalRoute.of(context)!.settings.arguments as Map),
         "/buyerPasswordReset":(context) => BuyerPasswordReset(arguments: ModalRoute.of(context)!.settings.arguments as Map),
+        "/buyerViewCoderProfile":(context) => BuyerViewCoderProfile(arguments: ModalRoute.of(context)!.settings.arguments as Map),
         "/choose":(context) => Choose(),
         "/coderHome":(context) => CoderHome(),
         "/coderLogin": (context) => CoderLogin(),

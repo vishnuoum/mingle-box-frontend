@@ -176,7 +176,9 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
             itemCount: coders.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
-                onTap: (){},
+                onTap: (){
+                  Navigator.pushNamed(context, "/buyerViewCoderProfile",arguments: {"id":coders[index]["id"]});
+                },
                 contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
                 leading: CircleAvatar(
                   radius: 30,
