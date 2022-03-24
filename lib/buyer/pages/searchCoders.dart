@@ -191,6 +191,7 @@ class _BuyerSearchCodersState extends State<BuyerSearchCoders> {
                   onPressed: (){
                     print(coders[index]);
                     socket.emit('sendMessage', {"sender":sharedPreferences.getString("mail"),"senderType":"buyer","message":"Hi","receiver":coders[index]["id"],"receiverType":"coder"});
+                    Navigator.pushNamed(context, "/buyerChatList");
                   },
                   tooltip: "Say Hi to ${coders[index]["username"]}",
                   color: Colors.blue,

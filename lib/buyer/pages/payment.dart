@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mingle_box/buyer/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -91,7 +92,17 @@ class _BuyerPaymentState extends State<BuyerPayment> {
                   Text(history[index]["description"])
                 ],
               ),
-            )
+            ),
+            ListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Payment Date:",style: TextStyle(fontWeight: FontWeight.bold),),
+                  SizedBox(height: 5,),
+                  Text(DateFormat("dd/MM/yyyy").format(DateTime.parse(history[index]["datetime"])))
+                ],
+              ),
+            ),
           ],
         );
       }),

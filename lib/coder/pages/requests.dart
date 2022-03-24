@@ -111,6 +111,10 @@ class _CoderRequestsState extends State<CoderRequests> {
               print(result[index]);
               socket.emit('sendMessage', {"sender":sharedPreferences.getString("mail"),"senderType":"coder","message":"Interested in ${result[index]["name"]}","receiver":result[index]["buyerId"],"receiverType":"buyer"});
               buyersRequest.respond(coderId: sharedPreferences.getString("mail"), requestId: result[index]["id"]);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("You responded for the request from ${result[index]["username"]}"),
+              ));
+              Navigator.pushNamed(context, "/coderChatList");
             },color: Colors.blue,),
             expandedAlignment: Alignment.bottomLeft,
             expandedCrossAxisAlignment: CrossAxisAlignment.start,

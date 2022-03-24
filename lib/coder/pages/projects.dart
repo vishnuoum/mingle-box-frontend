@@ -183,7 +183,7 @@ class _CoderProjectsState extends State<CoderProjects> {
           child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
         ):ListView.builder(
             itemCount: result.length,
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.only(left:10,right: 10,top: 10,bottom: 50),
             itemBuilder: (BuildContext context,int index){
           return GestureDetector(
             onTap: (){
