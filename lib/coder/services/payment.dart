@@ -6,7 +6,7 @@ class Payment{
   Future<dynamic> paymentHistory({required String? id})async{
     try {
       Response response = await post(
-          Uri.parse("http://192.168.18.2:3000/coderPaymentHistory"),
+          Uri.parse("http://192.168.18.46:3000/coderPaymentHistory"),
           body: {"id": id});
       return jsonDecode(response.body);
     }

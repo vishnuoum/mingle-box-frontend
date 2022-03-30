@@ -120,8 +120,16 @@ class _CoderRequestsState extends State<CoderRequests> {
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.all(10),
             children: [
-              Text("Description",style: TextStyle(fontWeight: FontWeight.bold),),
+              Text("Requested Technology",style: TextStyle(fontWeight: FontWeight.bold),),
+              SizedBox(height: 5,),
+              Text(result[index]["technology"].substring(1,result[index]["technology"].length-1).replaceAll("\"","")),
               SizedBox(height: 10,),
+              Text("Requested Cost",style: TextStyle(fontWeight: FontWeight.bold),),
+              SizedBox(height: 5,),
+              Text("Rs.${result[index]["cost"]}"),
+              SizedBox(height: 10,),
+              Text("Description",style: TextStyle(fontWeight: FontWeight.bold),),
+              SizedBox(height: 5,),
               Text(result[index]["description"])
             ],
           );

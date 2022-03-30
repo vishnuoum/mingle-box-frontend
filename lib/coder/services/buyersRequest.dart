@@ -6,7 +6,7 @@ class BuyersRequest{
   Future<dynamic> buyersRequest()async{
     try {
       Response response = await post(
-          Uri.parse("http://192.168.18.2:3000/listBuyersRequests"));
+          Uri.parse("http://192.168.18.46:3000/listBuyersRequests"));
       print(jsonDecode(response.body));
       return jsonDecode(response.body);
     }
@@ -19,7 +19,7 @@ class BuyersRequest{
   Future<dynamic> respond({required String? coderId,required int requestId})async{
     try {
       Response response = await post(
-          Uri.parse("http://192.168.18.2:3000/coderRespond"),body: {"coderId":coderId,"requestId":requestId.toString()});
+          Uri.parse("http://192.168.18.46:3000/coderRespond"),body: {"coderId":coderId,"requestId":requestId.toString()});
     }
     catch(e){
       print(e);

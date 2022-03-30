@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:mingle_box/buyer/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,7 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
   bool loading=true;
   Service service=Service();
   String text="Loading";
+  DateFormat format = DateFormat("dd/MM/yyyy");
 
   late SharedPreferences sharedPreferences;
 
@@ -78,9 +80,37 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
                 requests[index]["technology"]=json.decode(requests[index]["technology"]);
               return ExpansionTile(
                   title: Text(requests[index]["name"],style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                  subtitle: Text("Responses: ${requests[index]["responses"]}",style: TextStyle(fontSize: 15)),
+                  subtitle: Text("Requested cost: Rs.${requests[index]["cost"]}",style: TextStyle(fontSize: 15)),
                   expandedCrossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Text("Added Date:",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                        SizedBox(width: 10,),
+                        Text(format.format( DateTime.parse(requests[index]["adddatetime"]))),],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      children: [
+                        Text("Status:",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                        SizedBox(width: 10,),
+                        Text(requests[index]["status"]),],
+                    ),
+                    SizedBox(height: 10,),
+                    requests[index]["finalCost"]==null?SizedBox():Row(
+                      children: [
+                        Text("Completed Date:",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                        SizedBox(width: 10,),
+                        Text(format.format( DateTime.parse(requests[index]["completeDate"]))),],
+                    ),
+                    SizedBox(height: 10,),
+                    requests[index]["finalCost"]==null?SizedBox():Row(
+                      children: [
+                        Text("Final Cost:",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                        SizedBox(width: 10,),
+                        Text(format.format( DateTime.parse(requests[index]["finalCost"]))),],
+                    ),
+                    SizedBox(height: 10,),
                     Text("Requested Technologies:",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
                     ListView.separated(
                       shrinkWrap: true,
@@ -94,9 +124,9 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
                         return Divider(height: 0,);
                       },
               ),],
-                trailing: IconButton(color: Colors.blue,icon: Icon(Icons.person),onPressed: (){
+                trailing: TextButton.icon(icon: Icon(Icons.person),onPressed: (){
                   Navigator.pushNamed(context, "/buyerResponders",arguments: {"id":requests[index]["id"]});
-                },tooltip: "Coders Responded",),
+                },label: Text(requests[index]["responses"].toString()),),
               );
             }
         ),

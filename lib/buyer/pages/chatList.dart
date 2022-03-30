@@ -33,7 +33,7 @@ class _BuyerChatListState extends State<BuyerChatList> {
 
   void init()async{
     try {
-      socket = io('http://192.168.18.2:3000', <String, dynamic>{
+      socket = io('http://192.168.18.46:3000', <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
       });

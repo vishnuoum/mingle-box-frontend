@@ -12,7 +12,7 @@ class BuyerRequest extends StatefulWidget {
 class _BuyerRequestState extends State<BuyerRequest> {
 
   dynamic tech=[];
-  TextEditingController requestName= TextEditingController(text: ""),description=TextEditingController(text: ""),technology=TextEditingController(text: "");
+  TextEditingController requestName= TextEditingController(text: ""),cost= TextEditingController(text: ""),description=TextEditingController(text: ""),technology=TextEditingController(text: "");
   late SharedPreferences sharedPreferences;
   Service service = Service();
 
@@ -162,6 +162,27 @@ class _BuyerRequestState extends State<BuyerRequest> {
             ),
           ),
           SizedBox(height: 15,),
+          Text("Project Cost"),
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[200]
+            ),
+            child: TextField(
+              maxLines: null,
+              textCapitalization: TextCapitalization.words,
+              controller: cost,
+              focusNode: null,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Project Cost'
+              ),
+            ),
+          ),
+          SizedBox(height: 15,),
           Text("Project Description"),
           Container(
             margin: EdgeInsets.only(top: 10),
@@ -185,9 +206,13 @@ class _BuyerRequestState extends State<BuyerRequest> {
           SizedBox(height: 15,),
           TextButton(onPressed: () async {
             FocusScope.of(context).unfocus();
-            if (requestName.text.length != 0 && description.text.length!=0 && tech.length!=0) {
+            if (requestName.text.length != 0 && description.text.length!=0 && tech.length!=0 && cost.text.length!=0) {
+              if(double.parse(cost.text)<=0){
+                alertDialog("Please provide a valid cost.");
+                return;
+              }
               showLoading(context);
-              var res=await service.buyerAddRequest(id: sharedPreferences.getString("mail"), name: requestName.text, description: description.text, tech: tech);
+              var res=await service.buyerAddRequest(id: sharedPreferences.getString("mail"), name: requestName.text, description: description.text, tech: tech,cost:cost.text);
               if(res=="done"){
                 Navigator.pop(context);
                 Navigator.pop(context);
