@@ -237,4 +237,36 @@ class Service{
     }
   }
 
+  Future<dynamic> buyerRequestBidders({required String? id})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.46:3000/buyerRequestBidders"),
+          body: {"id": id});
+      print(response);
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
+
+  Future<dynamic> buyerSelectBidder({required String? id,required String coderId,required String requestId,required String amount})async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.46:3000/buyerSelectBidder"),
+          body: {"id": id,"coderId":coderId,"requestId":requestId,"finalCost":amount});
+      if(response.body=="done"){
+        return "done";
+      }
+      else{
+        return "error";
+      }
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
+
 }

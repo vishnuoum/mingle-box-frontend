@@ -130,6 +130,15 @@ class _CoderHomeState extends State<CoderHome> {
               },
             ),
             ListTile(
+              title: Text("Response History"),
+              onTap: ()async{
+                Navigator.pop(context);
+                await Navigator.pushNamed(context, "/coderResponseHistory");
+                loading=true;
+                loadDash();
+              },
+            ),
+            ListTile(
               title: Text("Profile"),
               onTap: ()async {
                 Navigator.pop(context);

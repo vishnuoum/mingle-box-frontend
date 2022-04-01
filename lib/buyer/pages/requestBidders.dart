@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:mingle_box/buyer/services/service.dart';
 import 'package:mingle_box/coder/services/project.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CoderProjectBidders extends StatefulWidget {
+class BuyerRequestBidders extends StatefulWidget {
   final Object? arguments;
-  const CoderProjectBidders({Key? key,required this.arguments}) : super(key: key);
+  const BuyerRequestBidders({Key? key,required this.arguments}) : super(key: key);
 
   @override
-  State<CoderProjectBidders> createState() => _CoderProjectBiddersState();
+  State<BuyerRequestBidders> createState() => _BuyerRequestBiddersState();
 }
 
-class _CoderProjectBiddersState extends State<CoderProjectBidders> {
+class _BuyerRequestBiddersState extends State<BuyerRequestBidders> {
 
   dynamic result=[];
 
   bool loading=true;
   String loadText="Loading";
-  Project project=Project();
+  Service service=Service();
   late Map arg;
   late SharedPreferences sharedPreferences;
 
@@ -34,7 +35,7 @@ class _CoderProjectBiddersState extends State<CoderProjectBidders> {
   void loadBidders()async{
     setState(() {});
     arg=(widget.arguments as Map);
-    result=await project.coderProjectBidders(id: arg["id"]);
+    result=await service.buyerRequestBidders(id: arg["id"]);
     print(result);
     if(result=="error"){
       setState(() {
@@ -151,41 +152,41 @@ class _CoderProjectBiddersState extends State<CoderProjectBidders> {
           itemBuilder: (BuildContext context,int index){
             var date=DateTime.parse(result[index]["datetime"]);
             return ExpansionTile(
-                expandedAlignment: Alignment.topLeft,
-                leading: CircleAvatar(
-                  child: Text(result[index]["bidder"][0].toUpperCase(),style: TextStyle(fontSize: 20),),
-                  radius: 25,
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                ),
-                title: Text(result[index]["bidder"],style: TextStyle(fontWeight: FontWeight.bold),),
-                subtitle: Text("Rs. ${result[index]["amount"]}",style: TextStyle(color: Colors.grey[700],fontWeight: FontWeight.bold),),
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(onPressed: ()async{
-                        print(result[index]);
-                        showLoading(context);
-                        var res= await project.coderSelectBidder(id: sharedPreferences.getString("mail"), buyerId: result[index]["bidderId"], projectId: arg["id"],amount: result[index]["amount"]);
-                        if(res=="done"){
-                          Navigator.pop(context);
-                          nonPopAlertDialog("Bid completed successfully");
-                        }
-                        else{
-                          Navigator.pop(context);
-                          alertDialog("Something went wrong. Try again.");
-                        }
-                        }, child: Text("Select bidder"),style: TextButton.styleFrom(padding: EdgeInsets.all(10)),),
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        child: Text("Bid Date : ${date.day}/${date.month}/${date.year}"),
-                      )
-                    ],
-                  )
-                ],
+              expandedAlignment: Alignment.topLeft,
+              leading: CircleAvatar(
+                child: Text(result[index]["bidder"][0].toUpperCase(),style: TextStyle(fontSize: 20),),
+                radius: 25,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
+              ),
+              title: Text(result[index]["bidder"],style: TextStyle(fontWeight: FontWeight.bold),),
+              subtitle: Text("Rs. ${result[index]["amount"]}",style: TextStyle(color: Colors.grey[700],fontWeight: FontWeight.bold),),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(onPressed: ()async{
+                      print(result[index]);
+                      showLoading(context);
+                      var res= await service.buyerSelectBidder(id: sharedPreferences.getString("mail"), coderId: result[index]["bidderId"], requestId: arg["id"],amount: result[index]["amount"]);
+                      if(res=="done"){
+                        Navigator.pop(context);
+                        nonPopAlertDialog("Bid completed successfully");
+                      }
+                      else{
+                        Navigator.pop(context);
+                        alertDialog("Something went wrong. Try again.");
+                      }
+                    }, child: Text("Select bidder"),style: TextButton.styleFrom(padding: EdgeInsets.all(10)),),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text("Bid Date : ${date.day}/${date.month}/${date.year}"),
+                    )
+                  ],
+                )
+              ],
             );
-      }),
+          }),
     );
   }
 }

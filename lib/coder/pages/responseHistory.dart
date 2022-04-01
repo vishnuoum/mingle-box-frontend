@@ -1,79 +1,59 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mingle_box/coder/services/buyersRequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 
-class CoderRequests extends StatefulWidget {
-  const CoderRequests({Key? key}) : super(key: key);
+class CoderResponseHistory extends StatefulWidget {
+  const CoderResponseHistory({Key? key}) : super(key: key);
 
   @override
-  _CoderRequestsState createState() => _CoderRequestsState();
+  _CoderResponseHistoryState createState() => _CoderResponseHistoryState();
 }
 
-class _CoderRequestsState extends State<CoderRequests> {
+class _CoderResponseHistoryState extends State<CoderResponseHistory> {
 
+  bool loading=true;
+  String text="Loading";
+  DateFormat formatter = DateFormat('dd/MM/yyyy');
+
+  late SharedPreferences sharedPreferences;
+  BuyersRequest buyerRequest = BuyersRequest();
   TextEditingController name=TextEditingController(text: ""),amount=TextEditingController(text: "");
 
-  dynamic result=[];
-  BuyersRequest buyersRequest=BuyersRequest();
-  late Socket socket;
-  bool loading=true;
-  String loadText="Loading";
-  late SharedPreferences sharedPreferences;
+
+  dynamic bidHistory=[{"id":"123","name":"name","projectId":"566","coder":"hello hai","amount":"1200","datetime":"27/02/2021","status":"pending"},
+    {"id":"123","name":"name","projectId":"566","coder":"hello hai","amount":"1200","datetime":"27/02/2021","status":"pending"},
+    {"id":"123","name":"name","projectId":"566","coder":"hello hai","amount":"1200","datetime":"27/02/2021","status":"pending"}
+  ];
 
   @override
   void initState() {
-    load();
+    loadSP();
     super.initState();
   }
 
-  void load()async{
+  void loadSP()async{
     sharedPreferences=await SharedPreferences.getInstance();
-    init();
+    load();
   }
 
-  void init()async{
-    try {
-      socket = io('http://192.168.18.2:3000', <String, dynamic>{
-        'transports': ['websocket'],
-        'autoConnect': false,
-      });
-
-      // Connect to web socket
-      socket.connect();
-      socket.on('connect', (_){
-        print('connected');
-      });
-
-      socket.emit('userId', {"userId":sharedPreferences.getString("mail")});
-
-      socket.emit("connection");
-
-    }catch(e){
-      print(e);
-      Future.delayed(Duration(seconds: 5),(){
-        init();
-      });
-    }
-    loadRequests();
-  }
-
-  void loadRequests()async{
+  void load()async{
     setState(() {});
-    result=await buyersRequest.buyersRequest();
-    print(result);
-    if(result=="error"){
+    bidHistory=await buyerRequest.responseHistory(id: sharedPreferences.getString("mail"));
+    if(bidHistory=="error"){
+      setState(() {
+        text="Something went wrong";
+      });
       Future.delayed(Duration(seconds: 5),(){
-        setState(() {
-          loadText="Something went wrong";
-        });
-        loadRequests();
+        load();
       });
     }
     else{
+      text="Loading";
       setState(() {
         loading=false;
-        loadText="Loading";
       });
     }
   }
@@ -196,7 +176,7 @@ class _CoderRequestsState extends State<CoderRequests> {
                   return;
                 }
                 showLoading(context);
-                var res=await buyersRequest.respond(coderId: sharedPreferences.getString("mail"),amount: amount.text,requestId: requestId);
+                var res=await buyerRequest.respond(coderId: sharedPreferences.getString("mail"),amount: amount.text,requestId: requestId);
                 if(res=="done"){
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -227,74 +207,58 @@ class _CoderRequestsState extends State<CoderRequests> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Buyers' Requests"),
-        elevation: 0,
-      ),
-      body: loading?Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
-            SizedBox(height: 10,),
-            Text(loadText)
-          ],
+        appBar: AppBar(
+          elevation: 0,
+          title: Text("Response History"),
         ),
-      ):result.length==0?Center(
-        child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
-      ):ListView.separated(
-        padding: EdgeInsets.only(top: 5),
-        itemCount: result.length,
-        itemBuilder: (context, index) {
-          return ExpansionTile(
-            leading: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              child: Text("${result[index]["username"][0].toUpperCase()}",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-            ),
-            title: Text("${result[index]["name"]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-            subtitle: Text("${result[index]["username"]}",style: TextStyle(fontSize: 15),),
-            trailing: IconButton(icon: Icon(Icons.attach_money),onPressed: (){
-              showBottomSheet(requestId: result[index]["id"], amt: result[index]["lowestBid"]=="0"?result[index]["cost"]:result[index]["lowestBid"], requestName: result[index]["name"]);
-            },color: Colors.blue,),
-            expandedAlignment: Alignment.bottomLeft,
-            expandedCrossAxisAlignment: CrossAxisAlignment.start,
-            childrenPadding: EdgeInsets.all(10),
+        body: loading?Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Requested Technology",style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 5,),
-              Text(result[index]["technology"].substring(1,result[index]["technology"].length-1).replaceAll("\"","")),
+              SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
               SizedBox(height: 10,),
-              Text("Requested Cost",style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 5,),
-              Text("Rs.${result[index]["cost"]}"),
-              SizedBox(height: 10,),
-              Text("Description",style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 5,),
-              Text(result[index]["description"]),
-              SizedBox(height: 10,),
-              Text("Lowest Bid",style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 5,),
-              Text(result[index]["lowestBid"]=="0"?"None":"Rs.${result[index]["lowestBid"]}"),
-              SizedBox(height: 10,),
+              Text(text)
             ],
-          );
-        },
-        separatorBuilder: (context, index) {
-          return Divider(
-            thickness: 0.5,
-            height: 0,
-            indent: 5,
-            endIndent: 5,
-          );
-        },
-      )
+          ),
+        ):bidHistory.length==0?Center(
+          child: Text("Nothing to display",style: TextStyle(color: Colors.grey[600],fontSize: 17),),
+        ):ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: bidHistory.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ExpansionTile(
+                leading: CircleAvatar(
+                  backgroundColor: bidHistory[index]["status"]=="Lost"?Colors.red:bidHistory[index]["status"]=="Pending"?Colors.orange:Colors.green,
+                  child: Icon(bidHistory[index]["status"]=="Lost"?Icons.close:bidHistory[index]["status"]=="Pending"?Icons.error:Icons.check,color: Colors.white,),
+                ),
+                title: Text("${bidHistory[index]["name"]}",style: TextStyle(fontSize: 17,),),
+                subtitle: Text("Posted By: ${bidHistory[index]["buyer"]}"),
+                children: [
+                  ListTile(
+                    title: Text("Status: ${bidHistory[index]["status"]}"),
+                  ),
+                  ListTile(
+                    title: Text("Amount: Rs. ${bidHistory[index]["amount"]}"),
+                    trailing: bidHistory[index]["status"]=="Pending"?TextButton(
+                      child: Text("Change Amount"),
+                      onPressed: (){
+                        showBottomSheet(requestId: bidHistory[index]["requestId"], amt: bidHistory[index]["amount"], requestName: bidHistory[index]["name"]);
+                      },
+                    ):null,
+                  ),
+                  ListTile(
+                    title: Text("Bid Date: ${formatter.format(DateTime.parse(bidHistory[index]["datetime"]))}"),
+                  ),
+                  bidHistory[index]["status"]=="Won"?ListTile(
+                    title: Text("Won date: ${formatter.format(DateTime.parse(bidHistory[index]["completeDate"]))}"),
+                  ):SizedBox(),
+                ],
+              );
+            }
+        )
     );
   }
 }

@@ -108,7 +108,7 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
                       children: [
                         Text("Final Cost:",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
                         SizedBox(width: 10,),
-                        Text(format.format( DateTime.parse(requests[index]["finalCost"]))),],
+                        Text(requests[index]["finalCost"]),],
                     ),
                     SizedBox(height: 10,),
                     Text("Requested Technologies:",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
@@ -124,8 +124,10 @@ class _BuyerRequestHistoryState extends State<BuyerRequestHistory> {
                         return Divider(height: 0,);
                       },
               ),],
-                trailing: TextButton.icon(icon: Icon(Icons.person),onPressed: (){
-                  Navigator.pushNamed(context, "/buyerResponders",arguments: {"id":requests[index]["id"]});
+                trailing: requests[index]["finalCost"]!=null?SizedBox():TextButton.icon(icon: Icon(Icons.person),onPressed: ()async{
+                  await Navigator.pushNamed(context, "/buyerResponders",arguments: {"id":requests[index]["id"]});
+                  loading=true;
+                  load();
                 },label: Text(requests[index]["responses"].toString()),),
               );
             }

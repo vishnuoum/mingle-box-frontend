@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mingle_box/buyer/pages/bidHistory.dart';
 import 'package:mingle_box/buyer/pages/buyerViewCoderProfile.dart';
+import 'package:mingle_box/buyer/pages/requestBidders.dart';
 import 'package:mingle_box/choose.dart';
 import 'package:mingle_box/buyer/pages/home.dart';
 import 'package:mingle_box/buyer/pages/projects.dart';
@@ -10,6 +11,7 @@ import 'package:mingle_box/buyer/pages/signup.dart';
 import 'package:mingle_box/coder/pages/coderExam.dart';
 import 'package:mingle_box/coder/pages/passwordReset.dart';
 import 'package:mingle_box/coder/pages/projectBidders.dart';
+import 'package:mingle_box/coder/pages/responseHistory.dart';
 import 'package:mingle_box/coder/pages/techInfo.dart';
 
 import 'buyer/pages/chatList.dart';
@@ -98,7 +100,7 @@ class _MyAppState extends State<MyApp> {
         "/buyerChatList":(context) => BuyerChatList(),
         "/makePayment":(context) => MakePayment(),
         "/buyerRequest":(context) => BuyerRequest(),
-        "/buyerResponders":(context) => BuyerResponders(arguments: ModalRoute.of(context)!.settings.arguments as Map),
+        "/buyerResponders":(context) => BuyerRequestBidders(arguments: ModalRoute.of(context)!.settings.arguments as Map),
         "/buyerPasswordReset":(context) => BuyerPasswordReset(arguments: ModalRoute.of(context)!.settings.arguments as Map),
         "/buyerViewCoderProfile":(context) => BuyerViewCoderProfile(arguments: ModalRoute.of(context)!.settings.arguments as Map),
         "/choose":(context) => Choose(),
@@ -109,6 +111,7 @@ class _MyAppState extends State<MyApp> {
         "/coderProfile":(context) => CoderProfile(),
         "/coderPayment":(context) => CoderPayment(),
         "/coderRequests":(context) => CoderRequests(),
+        "/coderResponseHistory":(context) => CoderResponseHistory(),
         "/coderChatList":(context) => CoderChatList(),
         "/coderProjectBidders":(context) => CoderProjectBidders(arguments: ModalRoute.of(context)!.settings.arguments),
         "/coderExam":(context) => CoderExam(arguments: ModalRoute.of(context)!.settings.arguments),
