@@ -219,7 +219,11 @@ class _CoderSignupState extends State<CoderSignup> {
                   showLoading(context);
                   dynamic result=await registration.signup(mail: eMail.text, username:name.text, password: password.text);
                   print(result);
-                  if(result!="error"){
+                  if(result=="duplicate"){
+                    Navigator.pop(context);
+                    alertDialog("This mail id is already registered");
+                  }
+                  else if(result!="error"){
                     Navigator.pop(context);
                     sharedPreferences.setString("type", "coder");
                     sharedPreferences.setString("mail", result["id"]);

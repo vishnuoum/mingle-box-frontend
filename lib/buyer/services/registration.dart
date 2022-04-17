@@ -9,7 +9,10 @@ class BuyerRegistration{
       dynamic response = await post(
           Uri.parse("http://192.168.18.46:3000/buyerValidate"), body: {"mail": mail, "password": password});
       print(response);
-      if(response.body=="error")
+      if(response.body=="wrong"){
+        return "wrong";
+      }
+      else if(response.body=="error")
         return "error";
       return jsonDecode(response.body);
     }
@@ -24,7 +27,9 @@ class BuyerRegistration{
       dynamic response = await post(
           Uri.parse("http://192.168.18.46:3000/buyerRegister"), body: {"mail": mail, "username":username,"company":company,"password": password});
       print(response);
-      if(response.body=="error")
+      if(response.body=="duplicate")
+        return "duplicate";
+      else if(response.body=="error")
         return "error";
       return jsonDecode(response.body);
     }

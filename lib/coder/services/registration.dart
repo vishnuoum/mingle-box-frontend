@@ -9,7 +9,9 @@ class CoderRegistration{
       dynamic response = await post(
           Uri.parse("http://192.168.18.46:3000/coderValidate"), body: {"mail": mail, "password": password});
       print(response.body);
-      if(response.body=="error")
+      if(response.body=="wrong")
+        return "wrong";
+      else if(response.body=="error")
         return "error";
       return jsonDecode(response.body);
     }
@@ -25,7 +27,9 @@ class CoderRegistration{
           Uri.parse("http://192.168.18.46:3000/coderRegister"), body: {"mail": mail, "password": password,"username":username});
 
       print(response.body);
-      if(response.body=="error")
+      if(response.body=="duplicate")
+        return "duplicate";
+      else if(response.body=="error")
         return "error";
       return jsonDecode(response.body);
     }

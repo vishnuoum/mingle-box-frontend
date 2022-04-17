@@ -142,7 +142,11 @@ class _CoderLoginState extends State<CoderLogin> {
                   showLoading(context);
                   dynamic result=await registration.login(mail: eMail.text, password: password.text);
                   print(result);
-                  if(result!="error"){
+                  if(result=="wrong"){
+                    Navigator.pop(context);
+                    alertDialog("Wrong mail id or password");
+                  }
+                  else if(result!="error"){
                     Navigator.pop(context);
                     sharedPreferences.setString("type", "coder");
                     sharedPreferences.setString("mail", result["id"]);

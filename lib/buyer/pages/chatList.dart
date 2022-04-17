@@ -350,7 +350,7 @@ class _BuyerChatListState extends State<BuyerChatList> {
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("${result[index]["message"]}",overflow: TextOverflow.ellipsis,),
+              Expanded(child: Text("${result[index]["message"]}",overflow: TextOverflow.ellipsis,),),
               Text(DateFormat('hh:mm a').format(dateTime))
             ],
           ),
