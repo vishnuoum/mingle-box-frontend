@@ -228,7 +228,7 @@ class _BuyerProjectsState extends State<BuyerProjects> {
                 }
                 else{
                   Navigator.pop(context);
-                  alertDialog("Something went wrong. Try again later.");
+                  alertDialog("Something went wrong. Try again later. Also check whether you profile is verified.");
                 }
               },
                 child: Text("Update", style: TextStyle(fontSize: 17),),

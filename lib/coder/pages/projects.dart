@@ -26,13 +26,29 @@ class _CoderProjectsState extends State<CoderProjects> {
   DateFormat format = DateFormat("dd/MM/yyyy");
 
   Project project=Project();
+  List<PopupMenuEntry<dynamic>> hints=[];
 
   TextEditingController projectName=TextEditingController(text: ""),description=TextEditingController(text: ""),cost=TextEditingController(text: ""),technology=TextEditingController();
 
   @override
   void initState() {
     load();
+    loadHints();
     super.initState();
+  }
+
+  void loadHints()async{
+    var res = await project.getTechnologyList();
+    if(res=="error"){
+      hints=[];
+    }
+    else{
+      for(var i=0;i<res.length;i++){
+        hints.add(PopupMenuItem(child: Text(res[i]["technology"]),value: res[i]["technology"],));
+      }
+    }
+    setState(() {});
+    print(hints);
   }
 
   void load()async{
@@ -356,7 +372,17 @@ class _CoderProjectsState extends State<CoderProjects> {
                       style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Project Technology'
+                          hintText: 'Project Technology',
+                          suffixIcon: PopupMenuButton(
+                            icon: Icon(Icons.arrow_drop_down_sharp,color: Colors.grey,),
+                              itemBuilder: (context) => hints,
+                            onSelected: (val){
+                              technology.text="";
+                              setState((){
+                                tech.add(val);
+                              });
+                            },
+                          )
                       ),
                       onSubmitted: (text){
                         technology.text="";
@@ -422,7 +448,7 @@ class _CoderProjectsState extends State<CoderProjects> {
                       }
                       else{
                         Navigator.pop(context);
-                        showAlertDialog(context, "Something went wrong. Try again");
+                        showAlertDialog(context, "Something went wrong. Try again. Also check whether you are certified for these technologies.");
                       }
                     }
                     else{

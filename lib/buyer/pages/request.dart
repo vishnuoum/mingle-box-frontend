@@ -15,11 +15,27 @@ class _BuyerRequestState extends State<BuyerRequest> {
   TextEditingController requestName= TextEditingController(text: ""),cost= TextEditingController(text: ""),description=TextEditingController(text: ""),technology=TextEditingController(text: "");
   late SharedPreferences sharedPreferences;
   Service service = Service();
+  List<PopupMenuEntry<dynamic>> hints=[];
 
   @override
   void initState() {
     load();
+    loadHints();
     super.initState();
+  }
+
+  void loadHints()async{
+    var res = await service.getTechnologyList();
+    if(res=="error"){
+      hints=[];
+    }
+    else{
+      for(var i=0;i<res.length;i++){
+        hints.add(PopupMenuItem(child: Text(res[i]["technology"]),value: res[i]["technology"],));
+      }
+    }
+    setState(() {});
+    print(hints);
   }
 
   void load()async{
@@ -151,7 +167,17 @@ class _BuyerRequestState extends State<BuyerRequest> {
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Project Technology'
+                  hintText: 'Project Technology',
+                  suffixIcon: PopupMenuButton(
+                    icon: Icon(Icons.arrow_drop_down_sharp,color: Colors.grey,),
+                    itemBuilder: (context) => hints,
+                    onSelected: (val){
+                      technology.text="";
+                      setState((){
+                        tech.add(val);
+                      });
+                    },
+                  )
               ),
               onSubmitted: (text){
                 technology.text="";
@@ -219,7 +245,7 @@ class _BuyerRequestState extends State<BuyerRequest> {
               }
               else{
                 Navigator.pop(context);
-                alertDialog("Something went wrong. Try again");
+                alertDialog("Something went wrong. Try again. Also check whether you profile is verified.");
               }
             }
             else{

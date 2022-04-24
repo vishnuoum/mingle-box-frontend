@@ -251,6 +251,19 @@ class Service{
     }
   }
 
+  Future<dynamic> getTechnologyList()async{
+    try {
+      Response response = await post(
+          Uri.parse("http://192.168.18.46:3000/getTechnologyList"));
+      print(response);
+      return jsonDecode(response.body);
+    }
+    catch(e){
+      print(e);
+      return "error";
+    }
+  }
+
   Future<dynamic> buyerSelectBidder({required String? id,required String coderId,required String requestId,required String amount})async{
     try {
       Response response = await post(

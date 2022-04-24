@@ -205,7 +205,7 @@ class _CoderRequestsState extends State<CoderRequests> {
                 }
                 else{
                   Navigator.pop(context);
-                  alertDialog("Something went wrong. Try again later.");
+                  alertDialog("Something went wrong. Try again later. Also check whether you are certified for these technologies.");
                 }
               },
                 child: Text("Update", style: TextStyle(fontSize: 17),),
