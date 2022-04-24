@@ -104,30 +104,38 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
             ListTile(
               title: Text("Chats"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerChatList");
+                await Navigator.pushNamed(context, "/buyerChatList");
+                loading=true;
+                load();
               },
             ),
             ListTile(
               title: Text("Projects"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerProject");
+                await Navigator.pushNamed(context, "/buyerProject");
+                loading=true;
+                load();
               },
             ),
             ListTile(
               title: Text("Coders"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerSearchCoders");
+                await Navigator.pushNamed(context, "/buyerSearchCoders");
+                loading=true;
+                load();
               },
             ),
             ListTile(
               title: Text("Bid History"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerBidHistory");
+                await Navigator.pushNamed(context, "/buyerBidHistory");
+                loading=true;
+                load();
               },
             ),
             ListTile(
@@ -141,9 +149,11 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
             ListTile(
               title: Text("Profile"),
-              onTap: (){
+              onTap: ()async{
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/buyerProfile");
+                await Navigator.pushNamed(context, "/buyerProfile");
+                loading=true;
+                load();
               },
             ),
             ListTile(

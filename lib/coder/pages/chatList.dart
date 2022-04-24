@@ -91,27 +91,32 @@ class _CoderChatListState extends State<CoderChatList> {
   }
 
   void loadChatList()async{
-    setState(() {});
-    result= await chat.chatList(id: sharedPreferences.getString("mail"));
-    print(result);
-    if(result.length!=0 && result[0]["message"]==null){
-      result=[];
-    }
-    if(result=="error"){
-      Future.delayed(Duration(seconds: 5),(){
-        setState(() {
-          loadText="Something went wrong";
+    try {
+      setState(() {});
+      result = await chat.chatList(id: sharedPreferences.getString("mail"));
+      print(result);
+      if (result.length != 0 && result[0]["message"] == null) {
+        result = [];
+      }
+      if (result == "error") {
+        Future.delayed(Duration(seconds: 5), () {
+          setState(() {
+            loadText = "Something went wrong";
+          });
+          loadChatList();
         });
-        loadChatList();
-      });
+      }
+      else {
+        setState(() {
+          loading = false;
+          loadText = "Loading";
+        });
+      }
+      init();
     }
-    else{
-      setState(() {
-        loading=false;
-        loadText="Loading";
-      });
+    catch(e){
+      loadChatList();
     }
-    init();
   }
 
   @override
